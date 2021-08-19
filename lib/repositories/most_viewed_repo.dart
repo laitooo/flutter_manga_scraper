@@ -24,12 +24,20 @@ class ScrapeMostViewedRepository extends MostViewedRepository {
         if (await webScraper.loadWebPage(Constants.mostViewed)) {
           final ass = webScraper
               .getElement('div.list-truyen-item-wrap > a', ['href', 'title']);
+          final covers = webScraper
+              .getElement('div.list-truyen-item-wrap > a > img', ['src']);
+
           print('ass: ' + ass.toString());
-          /*var jsonResponse = convert.jsonDecode(response.body);
-          final list = (jsonResponse['results'] as List)
-              ?.map((manga) => Manga.fromJson(manga['data']))
-              ?.toList();*/
-          return OrError.value([]);
+          print('covers: ' + covers.toString());
+          final list = <Manga>[];
+          for (int i = 0; i < covers.length; i++) {
+            list.add(Manga(
+              name: ass[i * 2]['attributes']['title'],
+              slug: ass[i * 2]['attributes']['href'],
+              cover: covers[i]['attributes']['src'],
+            ));
+          }
+          return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
         }
@@ -50,11 +58,9 @@ class MockMostViewedRepository extends MostViewedRepository {
     final list = List.generate(
       10,
       (index) => Manga(
-        id: index + 1,
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         cover: generator.mangaCoverAsset(),
-        rate: generator.mangaRate(),
       ),
     );
 
