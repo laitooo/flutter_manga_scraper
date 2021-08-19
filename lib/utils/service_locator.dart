@@ -44,7 +44,7 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerSingleton<LatestChaptersRepository>(
     Features.isMockHttp
         ? MockLatestChaptersRepository()
-        : HttpLatestChaptersRepository(),
+        : ScrapeLatestChaptersRepository(),
   );
   serviceLocator.registerSingleton<MangaDetailsRepository>(
     Features.isMockHttp

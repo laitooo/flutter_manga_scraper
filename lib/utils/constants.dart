@@ -17,4 +17,5 @@ class Constants {
   static final domain2 = "https://readmanganato.com";
   static final mostViewed =
       "/manga_list?type=topview&category=all&state=all&page=1";
+  static final latestChapters = "/manga_list?type=latest&category=all&state=all&page=";
 }
