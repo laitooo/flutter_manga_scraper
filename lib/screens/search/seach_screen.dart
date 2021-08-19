@@ -15,7 +15,6 @@ import 'package:manga_scraper/translation/language.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/extensions.dart';
 import 'package:manga_scraper/utils/features.dart';
-import 'package:manga_scraper/utils/service_locator.dart';
 import 'package:manga_scraper/widgets/auto_rotate.dart';
 import 'package:manga_scraper/widgets/buttons.dart';
 import 'package:manga_scraper/widgets/progress_indicator.dart';

@@ -39,7 +39,7 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerSingleton<MostViewedRepository>(
     Features.isMockHttp
         ? MockMostViewedRepository()
-        : HttpMostViewedRepository(),
+        : ScrapeMostViewedRepository(),
   );
   serviceLocator.registerSingleton<LatestChaptersRepository>(
     Features.isMockHttp

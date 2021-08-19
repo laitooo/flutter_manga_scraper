@@ -28,7 +28,7 @@ class HttpMangaListRepository extends MangaListRepository {
       {'API_key': data.key, 'page': page.toString()},
     );*/
 
-    final url = Uri.https(Constants.domain, Constants.manga);
+    final url = Uri.https(Constants.domain, Constants.mostViewed);
 
     try {
       final result = await Connectivity().checkConnectivity();

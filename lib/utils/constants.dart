@@ -13,6 +13,8 @@ class Constants {
   static final posts = 'posts';
   static final advancedSearch = 'advanced-search';
 
-  static final domain = "api.mangadex.org";
-  static final manga = "manga";
+  static final domain = "https://mangakakalot.com";
+  static final domain2 = "https://readmanganato.com";
+  static final mostViewed =
+      "/manga_list?type=topview&category=all&state=all&page=1";
 }

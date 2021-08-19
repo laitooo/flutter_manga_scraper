@@ -28,7 +28,7 @@ class HttpLatestChaptersRepository extends LatestChaptersRepository {
       },
     );*/
 
-    final url = Uri.https(Constants.domain, Constants.manga);
+    final url = Uri.https(Constants.domain, Constants.mostViewed);
 
     try {
       final result = await Connectivity().checkConnectivity();

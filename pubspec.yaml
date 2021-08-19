@@ -39,6 +39,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   url_launcher: ^6.0.5
   flushbar: ^1.10.4
+  web_scraper: ^0.0.9
 
 dev_dependencies:
   flutter_test:
