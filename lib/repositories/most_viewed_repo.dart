@@ -22,19 +22,18 @@ class ScrapeMostViewedRepository extends MostViewedRepository {
       try {
         final webScraper = WebScraper(Constants.domain);
         if (await webScraper.loadWebPage(Constants.mostViewed)) {
-          final ass = webScraper
-              .getElement('div.list-truyen-item-wrap > a', ['href', 'title']);
-          final covers = webScraper
-              .getElement('div.list-truyen-item-wrap > a > img', ['src']);
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
 
-          print('ass: ' + ass.toString());
-          print('covers: ' + covers.toString());
           final list = <Manga>[];
-          for (int i = 0; i < covers.length; i++) {
+          for (int i = 0; i < a.length; i++) {
             list.add(Manga(
-              name: ass[i * 2]['attributes']['title'],
-              slug: ass[i * 2]['attributes']['href'],
-              cover: covers[i]['attributes']['src'],
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
             ));
           }
           return OrError.value(list);
@@ -42,7 +41,6 @@ class ScrapeMostViewedRepository extends MostViewedRepository {
           return OrError.error(ErrorType.serverError);
         }
       } on WebScraperException catch (e) {
-        print("Errrrrrrrror");
         print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
@@ -58,6 +56,7 @@ class MockMostViewedRepository extends MostViewedRepository {
     final list = List.generate(
       10,
       (index) => Manga(
+        url: '',
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         cover: generator.mangaCoverAsset(),

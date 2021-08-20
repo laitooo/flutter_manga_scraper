@@ -103,6 +103,7 @@ class MockSearchRepository extends SearchRepository {
             name: "الإنسان العاقل، وحيد كليًا",
             slug: (index + 1).toString(),
             number: (index + 1).toString(),
+            volume: (index + 1).toString(),
             url: ""),
         authors: [
           Author(

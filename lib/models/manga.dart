@@ -8,6 +8,7 @@ class Manga {
   final String slug;
   final String name;
   final String cover;
+  final String url;
   @JsonKey(defaultValue: false)
   bool isFav;
 
@@ -15,6 +16,7 @@ class Manga {
       {@required this.slug,
       @required this.name,
       @required this.cover,
+      @required this.url,
       this.isFav = false});
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);

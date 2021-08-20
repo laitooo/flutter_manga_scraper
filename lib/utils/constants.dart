@@ -14,8 +14,6 @@ class Constants {
   static final advancedSearch = 'advanced-search';
 
   static final domain = "https://www.mangatown.com";
-  static final domain2 = "https://readmanganato.com";
-  static final mostViewed =
-      "/manga_list?type=topview&category=all&state=all&page=1";
+  static final mostViewed = "/hot/";
   static final latestChapters = "/latest/";
 }

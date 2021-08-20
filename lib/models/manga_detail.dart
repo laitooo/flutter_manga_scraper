@@ -40,6 +40,7 @@ class Chapter {
   final String slug;
   final String url;
   final String number;
+  final String volume;
   @JsonKey(defaultValue: false)
   bool isWatched;
 
@@ -48,6 +49,7 @@ class Chapter {
       @required this.slug,
       @required this.number,
       @required this.url,
+      @required this.volume,
       this.isWatched = false});
 
   factory Chapter.fromJson(Map<String, dynamic> json) =>

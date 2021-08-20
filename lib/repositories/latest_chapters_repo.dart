@@ -21,7 +21,8 @@ class ScrapeLatestChaptersRepository extends LatestChaptersRepository {
       }
       try {
         final webScraper = WebScraper(Constants.domain);
-        if (await webScraper.loadWebPage(Constants.latestChapters)) {
+        if (await webScraper.loadWebPage(
+            Constants.latestChapters + '/${page.toString()}.htm')) {
           final a = webScraper.getElement(
               'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
           final b = webScraper.getElement(

@@ -20,37 +20,44 @@ class ScrapeMangaDetailsRepository extends MangaDetailsRepository {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        final webScraper = WebScraper(Constants.domain2);
-        if (await webScraper.loadWebPage('/' + slug)) {
-          final a = webScraper
-              .getElement('div.story-info-left > span > img', ['src', 'title']);
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage('/manga/$slug/')) {
+          final a = webScraper.getElement('ul.chapter_list > li > a', ['href']);
           final b = webScraper
-              .getElement('table.variations-tableInfo > tbody > tr > td', []);
-          final c = webScraper
-              .getElement('div.story-info-right-extent > p > em ', []);
+              .getElement('div.detail_content > div > ul > li > span', []);
+          final c =
+              webScraper.getElement('div.detail_content > div > ul > li', []);
           final d =
-              webScraper.getElement('div.panel-story-info-description', []);
-          final e = webScraper.getElement(
-              'table.variations-tableInfo > tbody > tr > td > a', []);
+              webScraper.getElement('div.detail_content > div > img', ['src']);
 
           print('*******' * 15);
-          print('url:' + Constants.domain2 + "/" + slug);
-          print("a:" + a.toString());
-          print("c:" + c.toString());
-          final categories = <String>[];
-          for (int i = 1; i < e.length; i++) {
-            categories.add(e[i]['title']);
+          print('url:' + Constants.domain + '/manga/$slug/');
+          final name = webScraper.getElement('h1.title-top', []).first['title'];
+          final chapters = <Chapter>[];
+          for (int i = 1; i < a.length; i++) {
+            final d = (a[i]['attributes']['href'] as String).split('/');
+            chapters.add(Chapter(
+              name: name,
+              slug: slug,
+              number: d[d.length == 5 ? 3 : 4].replaceAll('c', ''),
+              volume: d.length == 5 ? 'null' : d[3].replaceAll('v', ''),
+              url: Constants.domain + a[i]['attributes']['href'],
+            ));
           }
           final details = MangaDetail(
-              name: a.first['attributes']['title'],
+              name: name,
               slug: slug,
-              status: b[5]['title'],
-              rate: c.first['title'],
-              author: b[3]['title'],
-              summary: d.first['title'],
-              cover: a.first['attributes']['src'],
-              categories: categories,
-              chapters: [],
+              status: (c[7]['title'] as String).replaceFirst('Status(s):', ''),
+              rate: '    ' + b.first['title'],
+              author: (c[5]['title'] as String).replaceAll('Author(s):', ''),
+              summary:
+                  (webScraper.getElement('#show', []).first['title'] as String)
+                      .replaceFirst('HIDE', ''),
+              cover: d.first['attributes']['src'],
+              categories: (c[4]['title'] as String)
+                  .replaceFirst('Genre(s):', '')
+                  .split(','),
+              chapters: chapters,
               isFav: false);
           return OrError.value(details);
         } else {
@@ -89,6 +96,7 @@ class MockMangaDetailsRepository extends MangaDetailsRepository {
           name: "الإنسان العاقل، وحيد كليًا",
           slug: (index + 1).toString(),
           number: (index + 1).toString(),
+          volume: (index + 1).toString(),
           url: "",
           isWatched: generator.generateBool(),
         ),

@@ -72,6 +72,7 @@ class MockMangaListRepository extends MangaListRepository {
             name: "الإنسان العاقل، وحيد كليًا",
             slug: generator.generateNumber(1000).toString(),
             number: generator.generateNumber(1000).toString(),
+            volume: generator.generateNumber(50).toString(),
             url: ""),
         categories: [
           "action",
