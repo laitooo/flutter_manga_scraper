@@ -249,8 +249,12 @@ class _MangaReaderScreenState extends State<_MangaReaderScreen> {
                                 );
                               },
                               shareCallback: () {
-                                ShareLink().shareChapter(widget.name,
-                                    widget.slug, widget.chapter, context);
+                                ShareLink().shareChapter(
+                                    widget.name,
+                                    widget.slug,
+                                    widget.chapter,
+                                    widget.volume,
+                                    context);
                               },
                             );
                           });

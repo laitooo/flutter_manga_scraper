@@ -10,32 +10,15 @@ import 'package:manga_scraper/widgets/buttons.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    /*if (!Features.isEnglishEnabled) {
-      BlocProvider.of<LocalizationBloc>(context).add(ChangeLocale('ar'));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    }*/
-
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.gradientSplashStart,
-              AppColors.gradientSplashEnd,
-            ],
-          ),
-        ),
+        color: AppColors.getPrimaryColor(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/logo.png',
+              'assets/images/logo6.png',
               width: 200,
               height: 200,
             ),
@@ -43,8 +26,8 @@ class SplashScreen extends StatelessWidget {
             if (Features.isEnglishEnabled)
               AppButton(
                 text: Language.of(context).english,
-                borderColor: AppColors.mainColor2,
-                textColor: AppColors.mainColor1,
+                borderColor: AppColors.getAccentColor(),
+                textColor: AppColors.getAccentColor(),
                 onClick: () {
                   BlocProvider.of<LocalizationBloc>(context)
                       .add(ChangeLocale('en'));
@@ -58,8 +41,8 @@ class SplashScreen extends StatelessWidget {
             if (Features.isEnglishEnabled)
               AppButton(
                 text: Language.of(context).arabic,
-                borderColor: AppColors.mainColor2,
-                textColor: AppColors.mainColor1,
+                borderColor: AppColors.getAccentColor(),
+                textColor: AppColors.getAccentColor(),
                 onClick: () {
                   BlocProvider.of<LocalizationBloc>(context)
                       .add(ChangeLocale('ar'));

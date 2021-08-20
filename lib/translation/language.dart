@@ -27,6 +27,7 @@ abstract class Language {
   String get author;
   String get genres;
   String get status;
+  String get rate;
   String get releaseDate;
   String get notificationMode;
   String get favouriteMangaNotifications;

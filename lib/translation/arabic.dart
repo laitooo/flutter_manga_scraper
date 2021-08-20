@@ -46,6 +46,8 @@ class ArabicLanguage extends Language {
   @override
   String get status => "الحالة";
   @override
+  String get rate => "التقييم";
+  @override
   String get type => "النوع";
   @override
   String get aboutTheApp => "حول التطبيق";

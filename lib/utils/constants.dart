@@ -2,7 +2,7 @@ class Constants {
   static final contactEmail = 'app@on-manga.me';
   static final appVersion = '2.1.1';
   static final latestUpdate = '2020/08/28';
-  static final rootDir = 'Manga Online2';
+  static final rootDir = 'Manga scraper';
   static final downloadsDir = 'downloads';
   static final savedDir = 'saved';
   static final latestChapter = 'latest-chapter';

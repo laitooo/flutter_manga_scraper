@@ -62,7 +62,7 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
   Widget build(BuildContext context) {
     final _spacer = SizedBox(height: 5);
     final _textStyle = TextStyle(
-      color: Colors.white,
+      color: AppColors.getPrimaryColor(),
       fontSize: 12,
       fontWeight: FontWeight.w600,
     );
@@ -123,114 +123,76 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
 
             return ListView(
               children: [
-                Stack(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PositionedDirectional(
-                      top: 0,
+                    Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                          color: AppColors.getPrimaryColor(),
+                          borderRadius: BorderRadius.circular(10)),
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 130,
+                        width: 100,
+                        height: 150,
                         decoration: new BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
                           image: new DecorationImage(
-                            image: Features.isMockHttp
-                                ? AssetImage(mangaDetail.cover)
-                                : NetworkImage(mangaDetail.cover),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: new BackdropFilter(
-                          filter: new ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                          child: new Container(
-                            decoration: new BoxDecoration(
-                                color: Colors.black.withOpacity(0.4)),
-                          ),
+                              image: Features.isMockHttp
+                                  ? AssetImage(mangaDetail.cover)
+                                  : NetworkImage(mangaDetail.cover),
+                              fit: BoxFit.fill),
                         ),
                       ),
                     ),
-                    PositionedDirectional(
-                      top: 140,
-                      end: 20,
-                      child: Container(
-                        width: 80,
-                        height: 24,
-                        padding: EdgeInsetsDirectional.only(start: 15, top: 4),
-                        decoration: new BoxDecoration(
-                          image: new DecorationImage(
-                            image: AssetImage('assets/images/rate.png'),
-                          ),
-                        ),
-                        child: Text(
-                          mangaDetail.rate,
-                          style: TextStyle(
-                            fontFamily: AppFonts.english,
-                          ),
-                          strutStyle: AppFonts.getStyle(),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Container(
-                            width: 100,
-                            height: 150,
-                            decoration: new BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: new DecorationImage(
-                                  image: Features.isMockHttp
-                                      ? AssetImage(mangaDetail.cover)
-                                      : NetworkImage(mangaDetail.cover),
-                                  fit: BoxFit.fill),
+                    Container(
+                      width: MediaQuery.of(context).size.width - 150,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (mangaDetail.author != null) ...[
+                            _spacer,
+                            Text(
+                              Language.of(context).author +
+                                  ' : ' +
+                                  mangaDetail.author,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: _textStyle,
+                              strutStyle: AppFonts.getStyle(),
                             ),
+                          ],
+                          _spacer,
+                          Text(
+                            Language.of(context).genres +
+                                ' : ' +
+                                mangaDetail.categories.join(', '),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: _textStyle,
+                            strutStyle: AppFonts.getStyle(),
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width - 150,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (mangaDetail.author != null) ...[
-                                _spacer,
-                                Text(
-                                  Language.of(context).author +
-                                      ' : ' +
-                                      mangaDetail.author,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: _textStyle,
-                                  strutStyle: AppFonts.getStyle(),
-                                ),
-                              ],
-                              _spacer,
-                              Text(
-                                Language.of(context).genres +
-                                    ' : ' +
-                                    mangaDetail.categories.toString(),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: _textStyle,
-                                strutStyle: AppFonts.getStyle(),
-                              ),
-                              _spacer,
-                              Text(
-                                Language.of(context).status +
-                                    ' : ' +
-                                    mangaDetail.status,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: _textStyle,
-                              ),
-                            ],
+                          _spacer,
+                          Text(
+                            Language.of(context).status +
+                                ' : ' +
+                                mangaDetail.status,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: _textStyle,
                           ),
-                        )
-                      ],
-                    ),
+                          _spacer,
+                          Text(
+                            Language.of(context).rate +
+                                ' : ' +
+                                mangaDetail.rate,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: _textStyle,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
                 Padding(

@@ -2,7 +2,7 @@ import 'package:manga_scraper/translation/language.dart';
 
 class EnglishLanguage extends Language {
   @override
-  String get appName => "Manga Online";
+  String get appName => "Manga Scraper";
   @override
   String get english => "English";
   @override
@@ -45,6 +45,8 @@ class EnglishLanguage extends Language {
   String get releaseDate => "Release date";
   @override
   String get status => "Status";
+  @override
+  String get rate => "Rate";
   @override
   String get type => "Type";
   @override

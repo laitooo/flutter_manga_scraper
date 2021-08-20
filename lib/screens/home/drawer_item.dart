@@ -63,18 +63,16 @@ class DrawerItem extends StatelessWidget {
 
   String getTitle(HomePageType page, BuildContext context) {
     switch (page) {
-      case HomePageType.home:
-        return Language.of(context).homeScreen;
+      case HomePageType.favourites:
+        return Language.of(context).favorites;
       case HomePageType.mangaList:
         return Language.of(context).mangaList;
-      case HomePageType.news:
-        return Language.of(context).news;
+      case HomePageType.latest:
+        return Language.of(context).latestChapters;
       case HomePageType.downloads:
         return Language.of(context).downloads;
-      case HomePageType.chat:
-        return Language.of(context).chat;
-      case HomePageType.settings:
-        return Language.of(context).settings;
+      case HomePageType.popular:
+        return Language.of(context).mostViewed;
       default:
         return Language.of(context).homeScreen;
     }
