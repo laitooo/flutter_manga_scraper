@@ -15,6 +15,7 @@ class Constants {
 
   static final domain = "https://www.mangatown.com";
   static final mostViewed = "/hot/";
+  static final reader = "/manga/";
   static final latestChapters = "/latest/";
   static final mangaLists = "/directory/0-";
   static final search = "/search?name_method=cw"

@@ -265,6 +265,7 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
                                 builder: (context) => MangaReaderScreen(
                                   name: mangaDetail.name,
                                   slug: mangaDetail.slug,
+                                  volume: mangaDetail.chapters[index].volume,
                                   chapter: mangaDetail.chapters[index].number,
                                   isHorizontal: prefs.getReadingMode() ==
                                       ReadingMode.Horizontal,

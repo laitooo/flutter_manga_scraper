@@ -1,48 +1,50 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
 import 'package:connectivity/connectivity.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class MangaPagesRepository {
-  Future<OrError<List<String>, ErrorType>> load(String slug, String chapter);
+  Future<OrError<List<String>, ErrorType>> load(
+      String slug, String chapter, String volume);
 }
 
-class HttpMangaPagesRepository extends MangaPagesRepository {
-  // TODO: api key
-  // final _repo = serviceLocator.get<ApiKeyRepository>();
+class ScrapeMangaPagesRepository extends MangaPagesRepository {
   @override
   Future<OrError<List<String>, ErrorType>> load(
-      String slug, String chapter) async {
-    /*final data = await _repo.get();
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.readChapter + '/$slug/$chapter',
-      {'API_key': data.key},
-    );*/
-
-    final url = Uri.https(Constants.domain, Constants.mostViewed);
-
+      String slug, String chapter, String volume) async {
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        var response = await http.get(url);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final List<String> list = List.from(jsonResponse['pages_url']);
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage(Constants.reader +
+            slug +
+            '/' +
+            (volume == 'null' ? '' : 'v$volume/') +
+            'c$chapter/')) {
+          final a = webScraper.getElement('#viewer > a > img', ['src']);
+          final b =
+              webScraper.getElement('div.page_select > select > option', []);
+
+          final first = 'https:' + a.first['attributes']['src'];
+          final list = [first];
+          for (int i = 1; i < (b.length / 2) - 2; i++) {
+            final c = '0${i.toString()}';
+            final d = c.length == 2 ? '0$c' : c;
+            list.add(first.replaceFirst('000.jpg', '$d.jpg'));
+          }
+
           return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
     } on PlatformException catch (_) {
@@ -54,7 +56,7 @@ class HttpMangaPagesRepository extends MangaPagesRepository {
 class MockMangaPagesRepository extends MangaPagesRepository {
   @override
   Future<OrError<List<String>, ErrorType>> load(
-      String slug, String chapter) async {
+      String slug, String chapter, String volume) async {
     final list = List.generate(
         generator.generateNumber(50), (index) => generator.mangaAsset());
     return Future.delayed(

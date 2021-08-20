@@ -53,6 +53,7 @@ class _LatestChaptersScreen extends StatelessWidget {
                     name: state.list[index].name,
                     slug: state.list[index].slug,
                     chapter: state.list[index].number,
+                    volume: state.list[index].volume,
                     isHorizontal:
                         prefs.getReadingMode() == ReadingMode.Horizontal,
                   ),

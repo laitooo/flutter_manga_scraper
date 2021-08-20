@@ -24,6 +24,7 @@ class MangaReaderScreen extends StatelessWidget {
   final String name;
   final String slug;
   final String chapter;
+  final String volume;
   final bool isHorizontal;
 
   const MangaReaderScreen(
@@ -31,6 +32,7 @@ class MangaReaderScreen extends StatelessWidget {
       @required this.name,
       @required this.slug,
       @required this.chapter,
+      @required this.volume,
       @required this.isHorizontal})
       : super(key: key);
 
@@ -40,7 +42,7 @@ class MangaReaderScreen extends StatelessWidget {
         providers: [
           BlocProvider(
               create: (_) =>
-                  MangaPagesBloc()..add(LoadMangaPages(slug, chapter))),
+                  MangaPagesBloc()..add(LoadMangaPages(slug, chapter, volume))),
           BlocProvider(
               create: (_) => MangaDetailsBloc()..add(LoadMangaDetails(slug))),
         ],
@@ -57,10 +59,16 @@ class _MangaReaderScreen extends StatefulWidget {
   final String name;
   final String slug;
   final String chapter;
+  final String volume;
   final bool isHorizontal;
 
   const _MangaReaderScreen(
-      {Key key, this.name, this.slug, this.chapter, this.isHorizontal})
+      {Key key,
+      this.name,
+      this.slug,
+      this.volume,
+      this.chapter,
+      this.isHorizontal})
       : super(key: key);
 
   @override
@@ -120,8 +128,8 @@ class _MangaReaderScreenState extends State<_MangaReaderScreen> {
             return Center(
               child: ErrorButton(
                 onClick: (_) {
-                  BlocProvider.of<MangaPagesBloc>(context)
-                      .add(LoadMangaPages(widget.slug, widget.chapter));
+                  BlocProvider.of<MangaPagesBloc>(context).add(LoadMangaPages(
+                      widget.slug, widget.chapter, widget.volume));
                 },
               ),
             );
@@ -417,6 +425,7 @@ class _MangaReaderScreenState extends State<_MangaReaderScreen> {
           builder: (context) => MangaReaderScreen(
             name: widget.name,
             slug: widget.slug,
+            volume: widget.volume,
             chapter: chapter ?? widget.chapter,
             isHorizontal: prefs.getReadingMode() == ReadingMode.Horizontal,
           ),
