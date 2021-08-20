@@ -39,8 +39,8 @@ class _LatestChaptersScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MangaDetailsScreen(
-                    slug: state.list[index].manga.slug,
-                    name: state.list[index].manga.name,
+                    slug: state.list[index].slug,
+                    name: state.list[index].name,
                   ),
                 ),
               );
@@ -50,9 +50,10 @@ class _LatestChaptersScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MangaReaderScreen(
-                    name: state.list[index].manga.name,
-                    slug: state.list[index].manga.slug,
+                    name: state.list[index].name,
+                    slug: state.list[index].slug,
                     chapter: state.list[index].number,
+                    volume: state.list[index].volume,
                     isHorizontal:
                         prefs.getReadingMode() == ReadingMode.Horizontal,
                   ),

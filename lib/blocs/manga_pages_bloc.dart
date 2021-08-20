@@ -15,14 +15,15 @@ class MangaPagesBloc extends BaseBloc<MangaPagesState> {
 class LoadMangaPages extends BlocEvent<MangaPagesBloc, MangaPagesState> {
   final String slug;
   final String chapter;
+  final String volume;
 
-  LoadMangaPages(this.slug, this.chapter);
+  LoadMangaPages(this.slug, this.chapter, this.volume);
   @override
   Stream<MangaPagesState> toState(
       MangaPagesBloc bloc, MangaPagesState current) async* {
     yield LoadingMangaPages(current.list);
 
-    final res = await bloc._repo.load(slug, chapter);
+    final res = await bloc._repo.load(slug, chapter, volume);
     if (res.isValue) {
       yield LoadedMangaPages(res.asValue);
       bloc._watchedRepo.save(WatchedChapter(slug: slug, number: chapter));

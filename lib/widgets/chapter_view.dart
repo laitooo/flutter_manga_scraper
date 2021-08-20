@@ -47,7 +47,7 @@ class ChapterView extends StatelessWidget {
                 GestureDetector(
                   onTap: onClick,
                   child: Text(
-                    latestChapter.manga.name,
+                    latestChapter.name,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: AppColors.getPrimaryColor(),
@@ -82,15 +82,6 @@ class ChapterView extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          SizedBox(width: 5),
-          Text(
-            latestChapter.date,
-            style: TextStyle(
-              color: AppColors.getPrimaryColor(),
-              fontFamily: AppFonts.arabic,
-            ),
-            strutStyle: AppFonts.getStyle(),
           ),
           SizedBox(width: 5),
         ],

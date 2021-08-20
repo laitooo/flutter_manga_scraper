@@ -74,11 +74,9 @@ class MockFavouritesRepository extends FavouritesRepository {
     final list = List.generate(
       generator.generateNumber(10),
       (index) => Favourite(
-        id: index + 1,
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         cover: generator.mangaCoverAsset(),
-        rate: "4.32",
       ),
     );
 

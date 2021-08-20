@@ -1,49 +1,47 @@
-import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:manga_scraper/models/manga.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class MostViewedRepository {
   Future<OrError<List<Manga>, ErrorType>> load();
 }
 
-class HttpMostViewedRepository extends MostViewedRepository {
-  // TODO: api key
-  // final _repo = serviceLocator.get<ApiKeyRepository>();
+class ScrapeMostViewedRepository extends MostViewedRepository {
   @override
   Future<OrError<List<Manga>, ErrorType>> load() async {
-    /*final data = await _repo.get();
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.popularManga,
-      {'API_key': data.key},
-    );*/
-
-    final url = Uri.https(Constants.domain, Constants.manga);
-
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        var response = await http.get(url);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final list = (jsonResponse['results'] as List)
-              ?.map((manga) => Manga.fromJson(manga['data']))
-              ?.toList();
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage(Constants.mostViewed)) {
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
+
+          final list = <Manga>[];
+          for (int i = 0; i < a.length; i++) {
+            list.add(Manga(
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
+            ));
+          }
           return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
     } on PlatformException catch (_) {
@@ -58,11 +56,10 @@ class MockMostViewedRepository extends MostViewedRepository {
     final list = List.generate(
       10,
       (index) => Manga(
-        id: index + 1,
+        url: '',
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         cover: generator.mangaCoverAsset(),
-        rate: generator.mangaRate(),
       ),
     );
 

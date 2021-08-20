@@ -9,41 +9,33 @@ part 'favourite.g.dart';
 @HiveType(typeId: 0)
 class Favourite extends HiveObject {
   @HiveField(0)
-  final int id;
-  @HiveField(1)
   final String slug;
-  @HiveField(2)
+  @HiveField(1)
   final String name;
-  @HiveField(3)
+  @HiveField(2)
   final String cover;
-  @HiveField(4)
-  final String rate;
 
-  Favourite(
-      {@required this.id,
-      @required this.slug,
-      @required this.name,
-      @required this.cover,
-      @required this.rate});
+  Favourite({
+    @required this.slug,
+    @required this.name,
+    @required this.cover,
+  });
 
   factory Favourite.fromManga(Manga manga) => Favourite(
-      id: manga.id,
-      slug: manga.slug,
-      name: manga.name,
-      cover: manga.cover,
-      rate: manga.rate);
+        slug: manga.slug,
+        name: manga.name,
+        cover: manga.cover,
+      );
 
   factory Favourite.fromMangaDetail(MangaDetail manga) => Favourite(
-      id: manga.id,
-      slug: manga.slug,
-      name: manga.name,
-      cover: manga.cover,
-      rate: manga.rate);
+        slug: manga.slug,
+        name: manga.name,
+        cover: manga.cover,
+      );
 
   factory Favourite.fromMangaListItem(MangaListItem manga) => Favourite(
-      id: manga.id,
-      slug: manga.slug,
-      name: manga.name,
-      cover: manga.cover,
-      rate: manga.rate);
+        slug: manga.slug,
+        name: manga.name,
+        cover: manga.cover,
+      );
 }

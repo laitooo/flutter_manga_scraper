@@ -5,21 +5,18 @@ part 'manga.g.dart';
 
 @JsonSerializable()
 class Manga {
-  final int id;
   final String slug;
   final String name;
   final String cover;
-  @JsonKey(name: "item_rating")
-  final String rate;
+  final String url;
   @JsonKey(defaultValue: false)
   bool isFav;
 
   Manga(
-      {@required this.id,
-      @required this.slug,
+      {@required this.slug,
       @required this.name,
       @required this.cover,
-      @required this.rate,
+      @required this.url,
       this.isFav = false});
 
   factory Manga.fromJson(Map<String, dynamic> json) => _$MangaFromJson(json);

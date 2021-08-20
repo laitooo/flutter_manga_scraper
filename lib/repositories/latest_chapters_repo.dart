@@ -1,52 +1,53 @@
-import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:manga_scraper/models/latest_chapter.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class LatestChaptersRepository {
   Future<OrError<List<LatestChapter>, ErrorType>> load(int page);
 }
 
-class HttpLatestChaptersRepository extends LatestChaptersRepository {
-  // TODO: api key
-  //final _repo = serviceLocator.get<ApiKeyRepository>();
+class ScrapeLatestChaptersRepository extends LatestChaptersRepository {
   @override
   Future<OrError<List<LatestChapter>, ErrorType>> load(int page) async {
-    /*final data = await _repo.get();
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.latestChapter,
-      {
-        'API_key': data.key,
-        'page': page.toString(),
-      },
-    );*/
-
-    final url = Uri.https(Constants.domain, Constants.manga);
-
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        var response = await http.get(url);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final list = (jsonResponse['results'] as List)
-              ?.map((manga) => LatestChapter.fromJson(manga['data']))
-              ?.toList();
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage(
+            Constants.latestChapters + '/${page.toString()}.htm')) {
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
+          final c = webScraper.getElement(
+              'ul.manga_pic_list > li > p.new_chapter > a', ['href']);
+
+          final list = <LatestChapter>[];
+          for (int i = 0; i < a.length; i++) {
+            final d = (c[i]['attributes']['href'] as String).split('/');
+            list.add(LatestChapter(
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
+              number: d[d.length == 5 ? 3 : 4].replaceAll('c', ''),
+              volume: d.length == 5 ? 'null' : d[3].replaceAll('v', ''),
+            ));
+          }
           return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
     } on PlatformException catch (_) {
@@ -61,14 +62,12 @@ class MockLatestChaptersRepository extends LatestChaptersRepository {
     final list = List.generate(
       10,
       (index) => LatestChapter(
-        id: index + 1,
         cover: generator.mangaCoverAsset(),
         number: generator.generateNumber(300).toString(),
-        date: "قبل " + generator.generateNumber(7).toString() + " أيام",
-        manga: MangaInfo(
-          slug: generator.mangaSlug(),
-          name: generator.mangaName(),
-        ),
+        volume: generator.generateNumber(50).toString(),
+        slug: generator.mangaSlug(),
+        name: generator.mangaName(),
+        url: '',
       ),
     );
     return Future.delayed(

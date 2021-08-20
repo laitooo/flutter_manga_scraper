@@ -14,7 +14,6 @@ class MangaGridCard extends StatelessWidget {
   final String name;
   final String slug;
   final String cover;
-  final String rate;
   final bool isFav;
   final Function onClick;
   final Function onFavClicked;
@@ -24,7 +23,6 @@ class MangaGridCard extends StatelessWidget {
       this.name,
       this.slug,
       this.cover,
-      this.rate,
       this.isFav,
       this.onClick,
       this.onFavClicked})
@@ -40,7 +38,6 @@ class MangaGridCard extends StatelessWidget {
         name: manga.name,
         slug: manga.slug,
         cover: manga.cover,
-        rate: manga.rate,
         isFav: isFav,
         onClick: onClick,
         onFavClicked: onFavClicked,
@@ -56,7 +53,6 @@ class MangaGridCard extends StatelessWidget {
         name: mangaItem.name,
         slug: mangaItem.slug,
         cover: mangaItem.cover,
-        rate: mangaItem.rate,
         isFav: isFav,
         onClick: onClick,
         onFavClicked: onFavClicked,
@@ -72,7 +68,6 @@ class MangaGridCard extends StatelessWidget {
         name: favourite.name,
         slug: favourite.slug,
         cover: favourite.cover,
-        rate: favourite.rate,
         isFav: isFav,
         onClick: onClick,
         onFavClicked: onFavClicked,
@@ -147,15 +142,6 @@ class MangaGridCard extends StatelessWidget {
                   'assets/icons/star_icon.svg',
                   width: 12,
                   height: 12,
-                ),
-                Text(
-                  rate,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.unselectedTabColor,
-                    fontFamily: AppFonts.english,
-                  ),
-                  strutStyle: AppFonts.getStyle(),
                 ),
                 VerticalDivider(
                   thickness: 0.5,

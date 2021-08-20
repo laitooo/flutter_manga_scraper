@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manga_scraper/blocs/favourites_bloc.dart';
 import 'package:manga_scraper/blocs/manga_details_bloc.dart';
 import 'package:manga_scraper/models/favourite.dart';
-import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/screens/reader/manga_reader_screen.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
@@ -196,16 +195,6 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 10),
-                              Text(
-                                Language.of(context).type +
-                                    ' : ' +
-                                    mangaTypeToString(
-                                        mangaDetail.type, context),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: _textStyle,
-                              ),
                               if (mangaDetail.author != null) ...[
                                 _spacer,
                                 Text(
@@ -222,7 +211,7 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
                               Text(
                                 Language.of(context).genres +
                                     ' : ' +
-                                    categoriesToString(mangaDetail.categories),
+                                    mangaDetail.categories.toString(),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: _textStyle,
@@ -232,42 +221,11 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
                               Text(
                                 Language.of(context).status +
                                     ' : ' +
-                                    mangaStatusToString(
-                                        mangaDetail.status, context),
+                                    mangaDetail.status,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: _textStyle,
                               ),
-                              if (mangaDetail.releaseDate != null) ...[
-                                _spacer,
-                                Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: Language.of(context).releaseDate +
-                                            ' : ',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: mangaDetail.releaseDate,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: AppFonts.english,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  strutStyle: AppFonts.getStyle(),
-                                ),
-                              ]
                             ],
                           ),
                         )
@@ -307,6 +265,7 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
                                 builder: (context) => MangaReaderScreen(
                                   name: mangaDetail.name,
                                   slug: mangaDetail.slug,
+                                  volume: mangaDetail.chapters[index].volume,
                                   chapter: mangaDetail.chapters[index].number,
                                   isHorizontal: prefs.getReadingMode() ==
                                       ReadingMode.Horizontal,
@@ -327,13 +286,13 @@ class __MangaDetailsScreenState extends State<_MangaDetailsScreen> {
     );
   }
 
-  String categoriesToString(List<Category> list) {
+  /*String categoriesToString(List<Category> list) {
     String text = '';
     for (int i = 0; i < list.length; i++) {
       text += list[i].name + (i != list.length - 1 ? ', ' : '');
     }
     return text;
-  }
+  }*/
 
   _appBarActions() {
     return [

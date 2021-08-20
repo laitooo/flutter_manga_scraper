@@ -210,6 +210,24 @@ class ArabicLanguage extends Language {
   String get vampire => "مصاصي الدماء";
   @override
   String get webtoon => "ويب تون";
+  @override
+  String get cooking => "طبخ";
+  @override
+  String get fourKoma => "4 كوما";
+  @override
+  String get genderBender => "مبدل الجنس";
+  @override
+  String get music => "موسيقى";
+  @override
+  String get reverseHarem => "الحريم العكسي";
+  @override
+  String get shotakon => "شوتاكون";
+  @override
+  String get smut => "بذيء";
+  @override
+  String get suspense => "تشويق";
+  @override
+  String get youkai => "يوكاي";
 
   @override
   String get savedScreenshotToStorage => 'تم حفظ الصورة الى الذاكرة';

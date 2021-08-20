@@ -1,52 +1,73 @@
-import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/models/manga_list.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class MangaListRepository {
   Future<OrError<List<MangaListItem>, ErrorType>> load(
       String category, int page);
 }
 
-class HttpMangaListRepository extends MangaListRepository {
-  // TODO: api key
-  // final _repo = serviceLocator.get<ApiKeyRepository>();
+class ScrapeMangaListRepository extends MangaListRepository {
   @override
   Future<OrError<List<MangaListItem>, ErrorType>> load(
       String category, int page) async {
-    /*final data = await _repo.get();
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.mangaList + '/$category',
-      {'API_key': data.key, 'page': page.toString()},
-    );*/
-
-    final url = Uri.https(Constants.domain, Constants.manga);
-
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        var response = await http.get(url);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final list = (jsonResponse['data']['CategoryManga']['data'] as List)
-              ?.map((manga) => MangaListItem.fromJson(manga))
-              ?.toList();
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage(Constants.mangaLists +
+            category +
+            '-0-0-0-0/${page.toString()}.htm')) {
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
+          final c =
+              webScraper.getElement('ul.manga_pic_list > li > p.score > b', []);
+          final d = webScraper.getElement(
+              'ul.manga_pic_list > li > p.new_chapter > a', ['href']);
+          final f =
+              webScraper.getElement('ul.manga_pic_list > li > p.view', []);
+          final g =
+              webScraper.getElement('ul.manga_pic_list > li > p.keyWord', []);
+
+          final list = <MangaListItem>[];
+          for (int i = 0; i < a.length; i++) {
+            final e = (d[i]['attributes']['href'] as String).split('/');
+            list.add(MangaListItem(
+              lastChapter: Chapter(
+                url: Constants.domain + a[i]['attributes']['href'],
+                name: a[i]['attributes']['title'],
+                slug: (a[i]['attributes']['href'] as String).split('/')[2],
+                number: e[e.length == 5 ? 3 : 4].replaceAll('c', ''),
+                volume: e.length == 5 ? 'null' : e[3].replaceAll('v', ''),
+              ),
+              categories: (g[i]['title'] as String).split(','),
+              views: int.parse((f[i * 5 + 2]['title'] as String)
+                  .replaceFirst('Views: ', '')
+                  .trim()),
+              rate: c[i]['title'],
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
+            ));
+          }
           return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
     } on PlatformException catch (_) {
@@ -62,23 +83,22 @@ class MockMangaListRepository extends MangaListRepository {
     final list = List.generate(
       10,
       (index) => MangaListItem(
-        id: index + 1,
+        url: '',
         cover: generator.mangaCoverAsset(),
         rate: (generator.generateNumber(500) / 100).toString(),
         views: generator.generateNumber(1000000),
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         lastChapter: Chapter(
-          id: generator.generateNumber(10000),
-          name: "الإنسان العاقل، وحيد كليًا",
-          slug: generator.generateNumber(1000).toString(),
-          number: generator.generateNumber(1000).toString(),
-          mangaId: index + 1,
-        ),
+            name: "الإنسان العاقل، وحيد كليًا",
+            slug: generator.generateNumber(1000).toString(),
+            number: generator.generateNumber(1000).toString(),
+            volume: generator.generateNumber(50).toString(),
+            url: ""),
         categories: [
-          Category(id: 1, name: "أكشن", slug: "action"),
-          Category(id: 2, name: "مغامرة", slug: "adventure"),
-          Category(id: 3, name: "كوميدي", slug: "comedy")
+          "action",
+          "adventure",
+          "comedy",
         ],
       ),
     );

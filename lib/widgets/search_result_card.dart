@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/models/search_result.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
@@ -49,9 +48,7 @@ class SearchResultCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    Language.of(context).author +
-                        ' : ' +
-                        searchResult.authors[0].name,
+                    Language.of(context).author + ' : ' + searchResult.author,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -61,34 +58,12 @@ class SearchResultCard extends StatelessWidget {
                     strutStyle: AppFonts.getStyle(),
                   ),
                   Text(
-                    categoriesToString(searchResult.categories),
+                    searchResult.categories.toString(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12,
                     ),
-                    strutStyle: AppFonts.getStyle(),
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: Language.of(context).latestChapters + ' : ',
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                        TextSpan(
-                          text: searchResult.lastChapter.number,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: AppFonts.english,
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     strutStyle: AppFonts.getStyle(),
                   ),
                 ],
@@ -100,13 +75,13 @@ class SearchResultCard extends StatelessWidget {
     );
   }
 
-  String categoriesToString(List<Category> list) {
+  /*String categoriesToString(List<Category> list) {
     String text = '';
     for (int i = 0; i < list.length; i++) {
       text += list[i].name + (i != list.length - 1 ? ' , ' : '');
     }
     return text;
-  }
+  }*/
 
   List<TextSpan> _getNormalSearchText(String name) {
     return <TextSpan>[
