@@ -73,8 +73,6 @@ class DrawerItem extends StatelessWidget {
         return Language.of(context).downloads;
       case HomePageType.popular:
         return Language.of(context).mostViewed;
-      case HomePageType.settings:
-        return Language.of(context).settings;
       default:
         return Language.of(context).homeScreen;
     }

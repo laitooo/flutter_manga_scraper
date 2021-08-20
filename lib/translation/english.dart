@@ -2,7 +2,7 @@ import 'package:manga_scraper/translation/language.dart';
 
 class EnglishLanguage extends Language {
   @override
-  String get appName => "Manga Online";
+  String get appName => "Manga Scraper";
   @override
   String get english => "English";
   @override

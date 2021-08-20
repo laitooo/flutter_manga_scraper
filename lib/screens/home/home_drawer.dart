@@ -5,7 +5,6 @@ import 'package:manga_scraper/screens/home/tabs/favourites_screen.dart';
 import 'package:manga_scraper/screens/home/tabs/latest_chapters_screen.dart';
 import 'package:manga_scraper/screens/home/tabs/most_viewed_screen.dart';
 import 'package:manga_scraper/screens/manga_list/manga_list_screen.dart';
-import 'package:manga_scraper/screens/settings/settings_screen.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
 import 'package:manga_scraper/translation/language.dart';
@@ -87,12 +86,6 @@ class HomeDrawer extends StatelessWidget {
                 page: DownloadsScreen(
                   globalKey: downloadsKey,
                 ),
-                onClick: onPageChanged,
-              ),
-              DrawerItem(
-                current: HomePageType.settings,
-                icon: 'assets/icons/settings_icon.svg',
-                page: SettingsScreen(),
                 onClick: onPageChanged,
               ),
             ],

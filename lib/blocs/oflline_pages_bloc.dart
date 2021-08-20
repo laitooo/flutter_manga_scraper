@@ -1,5 +1,6 @@
 import 'package:manga_scraper/models/download.dart';
 import 'package:manga_scraper/utils/base_bloc.dart';
+import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/features.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +26,7 @@ class LoadOfflinePages extends BlocEvent<OfflinePagesBloc, OfflinePagesState> {
       yield LoadedOfflinePages(list);
     } else {
       final extPath = (await getExternalStorageDirectory()).path;
-      final path = "$extPath/Manga Online2/downloads/${download.name}/" +
+      final path = "$extPath/${Constants.rootDir}/downloads/${download.name}/" +
           download.number;
 
       final list = List.generate(download.images,

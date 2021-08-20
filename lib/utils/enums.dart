@@ -229,7 +229,6 @@ enum HomePageType {
   latest,
   mangaList,
   downloads,
-  settings,
 }
 
 enum ErrorType {
