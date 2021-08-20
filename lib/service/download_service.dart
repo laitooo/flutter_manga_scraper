@@ -21,7 +21,6 @@ Future<void> onStart() async {
   WidgetsFlutterBinding.ensureInitialized();
   final service = FlutterBackgroundService();
 
-  String domain;
   service.onDataReceived.listen((event) async {
     if (event['action'] == ServiceDownloadAction.foregroundMode.toText()) {
       service.setForegroundMode(true);
@@ -36,8 +35,6 @@ Future<void> onStart() async {
     }
 
     if (event['action'] == ServiceDownloadAction.addDownload.toText()) {
-      domain = event['domain'];
-
       DownloadData download = DownloadData.fromJson(event['download']);
       final res = await _downloadListRepo.get(download.slug, download.number);
       if (res.isValue) {
@@ -54,7 +51,7 @@ Future<void> onStart() async {
       } else {
         chapters.add(download.toCompanion(false));
         if (chapters.length == 1) {
-          _startDownloading(chapters, service, database, domain);
+          _startDownloading(chapters, service, database);
         } else {
           service.sendData({
             'status': UiDownloadAction.addedToQueue.toText(),
@@ -125,7 +122,6 @@ void _startDownloading(
   List<DownloadCompanion> chapters,
   FlutterBackgroundService service,
   MoorDatabase database,
-  String domain,
 ) async {
   DownloadCompanion current = chapters[0];
   final _repo = Features.isMockDio
@@ -154,12 +150,13 @@ void _startDownloading(
     slug: current.slug.value,
     name: current.name.value,
     number: current.number.value,
-    extension: current.extension.value,
+    volume: current.volume.value,
     progress: current.progress.value,
     isDownloading: current.isDownloading.value,
     images: current.images.value,
     hasFailed: current.hasFailed.value,
     hasCover: current.hasCover.value,
+    first: current.first.value,
   ).toJson();
   service.sendData({
     'status': UiDownloadAction.startedDownload.toText(),
@@ -177,7 +174,7 @@ void _startDownloading(
     print('cover saved');
 
     for (int i = 0; i < current.images.value; i++) {
-      final res = await _repo.download(current, domain, i);
+      final res = await _repo.download(current, i);
       if (res.isValue) {
         progress++;
         service.sendData({
@@ -278,7 +275,7 @@ void _startDownloading(
   }
   chapters.removeAt(0);
   if (chapters.isNotEmpty) {
-    _startDownloading(chapters, service, database, domain);
+    _startDownloading(chapters, service, database);
   } else {
     service.setForegroundMode(false);
   }

@@ -35,7 +35,7 @@ class MenuDialog extends StatelessWidget {
         child: Material(
           child: Container(
             color: Colors.black,
-            height: 165,
+            height: 135,
             width: MediaQuery.of(context).size.width * 0.45,
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: Column(

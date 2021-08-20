@@ -6,7 +6,6 @@ import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
 import 'package:manga_scraper/translation/language.dart';
-import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/widgets/progress_indicator.dart';
 import 'package:manga_scraper/widgets/progress_percentage.dart';
@@ -14,15 +13,17 @@ import 'package:manga_scraper/widgets/progress_percentage.dart';
 class DownloadDialog extends StatelessWidget {
   final MangaDetail mangaDetail;
   final int images;
+  final String firstImage;
   final String number;
-  final String extension;
+  final String volume;
 
   const DownloadDialog({
     Key key,
     @required this.number,
     @required this.mangaDetail,
     @required this.images,
-    @required this.extension,
+    @required this.volume,
+    @required this.firstImage,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -168,12 +169,12 @@ class DownloadDialog extends StatelessWidget {
       isDownloading: false,
       progress: 0,
       hasFailed: false,
-      extension: extension,
+      volume: volume,
+      first: firstImage,
     );
     FlutterBackgroundService().sendData({
       'action': ServiceDownloadAction.addDownload.toText(),
       'download': download.toJson(),
-      'domain': Constants.domain,
     });
   }
 }

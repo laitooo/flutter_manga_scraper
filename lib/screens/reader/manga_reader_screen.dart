@@ -220,6 +220,7 @@ class _MangaReaderScreenState extends State<_MangaReaderScreen> {
                     isTopVisible: isTopVisible,
                     isOffline: false,
                     slug: widget.slug,
+                    volume: widget.volume,
                     chapter: widget.chapter,
                     showMenuCallback: () {
                       showDialog(

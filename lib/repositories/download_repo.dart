@@ -14,8 +14,7 @@ enum DioDownloadStatus {
 }
 
 abstract class DownloadRepository {
-  Future<OrError<Null, Null>> download(
-      DownloadCompanion download, String domain, int index);
+  Future<OrError<Null, Null>> download(DownloadCompanion download, int index);
   Future<OrError<Null, Null>> saveCover(DownloadCompanion download);
   Future<OrError<Null, Null>> takeScreenshot(String url);
   Future<OrError<Null, Null>> offlineScreenshot(String path);
@@ -27,7 +26,7 @@ class DioDownloadRepository extends DownloadRepository {
   DioDownloadRepository(this.dio);
   @override
   Future<OrError<Null, Null>> download(
-      DownloadCompanion download, String domain, int index) async {
+      DownloadCompanion download, int index) async {
     final extPath = (await getExternalStorageDirectory()).path;
     final path =
         "$extPath/${Constants.rootDir}/${Constants.downloadsDir}/${download.name.value}/" +
@@ -35,53 +34,12 @@ class DioDownloadRepository extends DownloadRepository {
     if (!Directory(path).existsSync()) {
       Directory(path).createSync(recursive: true);
     }
-    final url = _generateImageUrl(domain, index, download.slug.value,
-        download.number.value, download.extension.value);
-    final res = await downloadImage(
-        path + '/image${index + 1}.' + download.extension.value, url);
+    final url = _generateImageUrl(index, download.first.value);
+    final res = await downloadImage(path + '/image${index + 1}.' + 'jpg', url);
     if (res == DioDownloadStatus.downloadSuccess) {
       return OrError.value(null);
     } else {
-      if (res == DioDownloadStatus.imageNotFound) {
-        String newExtension;
-        if (download.extension.value == 'jpg') {
-          newExtension = 'jpeg';
-        } else if (download.extension.value == 'jpeg') {
-          newExtension = 'jpg';
-        } else {
-          newExtension = 'jpg';
-        }
-
-        final url2 = _generateImageUrl(domain, index, download.slug.value,
-            download.number.value, newExtension);
-        final res2 = await downloadImage(
-            path + '/image${index + 1}.' + newExtension, url2);
-        if (res2 == DioDownloadStatus.downloadSuccess) {
-          return OrError.value(null);
-        } else {
-          if (res2 == DioDownloadStatus.imageNotFound) {
-            String newExtension2;
-            if (download.extension.value == 'png') {
-              newExtension2 = 'jpeg';
-            } else {
-              newExtension2 = 'png';
-            }
-
-            final url3 = _generateImageUrl(domain, index, download.slug.value,
-                download.number.value, newExtension2);
-            final res3 = await downloadImage(
-                path + '/image${index + 1}.' + newExtension2, url3);
-
-            return res3 == DioDownloadStatus.downloadSuccess
-                ? OrError.value(null)
-                : OrError.error(null);
-          } else {
-            return OrError.error(null);
-          }
-        }
-      } else {
-        return OrError.error(null);
-      }
+      return OrError.error(null);
     }
   }
 
@@ -92,7 +50,8 @@ class DioDownloadRepository extends DownloadRepository {
           ? DioDownloadStatus.downloadSuccess
           : DioDownloadStatus.someError;
     } on DioError catch (error) {
-      print('dio error: ' + error.message);
+      print('dio error: url: ' + url);
+      print('dio error: error: ' + error.message);
       if (error.type == DioErrorType.RESPONSE) {
         if (error.response.statusCode == 404)
           return DioDownloadStatus.imageNotFound;
@@ -152,18 +111,23 @@ class DioDownloadRepository extends DownloadRepository {
     }
   }
 
-  String _generateImageUrl(
-      String domain, int index, String slug, String chapter, String extension) {
-    return 'https://$domain/uploads/manga/$slug/chapters/$chapter/' +
-        (index + 1 < 10 ? '0${index + 1}' : '${index + 1}') +
-        '.$extension';
+  String _generateImageUrl(int index, String first) {
+    if (index == 0) return first;
+    final e = first.contains('000.jpg');
+    final c = '0${(e ? index : index + 1).toString()}';
+    final d = c.length == 2 ? '0$c' : c;
+    if (e) {
+      return first.replaceFirst('000.jpg', '$d.jpg');
+    } else {
+      return first.replaceFirst('001.jpg', '$d.jpg');
+    }
   }
 }
 
 class MockDownloadRepository extends DownloadRepository {
   @override
   Future<OrError<Null, Null>> download(
-      DownloadCompanion download, String domain, int index) async {
+      DownloadCompanion download, int index) async {
     return Future.delayed(Duration(seconds: 1), () => OrError.value(null));
   }
 

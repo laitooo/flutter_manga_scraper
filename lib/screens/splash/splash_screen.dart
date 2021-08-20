@@ -5,11 +5,13 @@ import 'package:manga_scraper/screens/home/home_screen.dart';
 import 'package:manga_scraper/translation/language.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/utils/features.dart';
+import 'package:manga_scraper/utils/size_utils.dart';
 import 'package:manga_scraper/widgets/buttons.dart';
 
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    sizeUtils.init(context);
     return Scaffold(
       body: Container(
         width: double.infinity,

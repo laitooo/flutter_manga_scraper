@@ -29,8 +29,8 @@ class LoadOfflinePages extends BlocEvent<OfflinePagesBloc, OfflinePagesState> {
       final path = "$extPath/${Constants.rootDir}/downloads/${download.name}/" +
           download.number;
 
-      final list = List.generate(download.images,
-          (index) => path + '/image${index + 1}.${download.extension}');
+      final list = List.generate(
+          download.images, (index) => path + '/image${index + 1}.jpg');
       yield LoadedOfflinePages(list);
     }
   }

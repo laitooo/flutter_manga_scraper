@@ -17,7 +17,8 @@ class Download extends Table {
   BoolColumn get hasFailed => boolean().nullable()();
   IntColumn get progress => integer().nullable()();
   IntColumn get images => integer().nullable()();
-  TextColumn get extension => text().nullable()();
+  TextColumn get volume => text().nullable()();
+  TextColumn get first => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {slug, number};

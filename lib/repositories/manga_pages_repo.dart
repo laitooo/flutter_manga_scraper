@@ -34,10 +34,15 @@ class ScrapeMangaPagesRepository extends MangaPagesRepository {
           final first = 'https:' + a.first['attributes']['src'];
           final list = [first];
           for (int i = 1; i < (b.length / 2) - 2; i++) {
-            final c = '0${i.toString()}';
+            final e = first.contains('000.jpg');
+            final c = '0${(e ? i : i + 1).toString()}';
             final d = c.length == 2 ? '0$c' : c;
-            list.add(first.replaceFirst('000.jpg', '$d.jpg'));
+            if (e)
+              list.add(first.replaceFirst('000.jpg', '$d.jpg'));
+            else
+              list.add(first.replaceFirst('001.jpg', '$d.jpg'));
           }
+          print(list);
 
           return OrError.value(list);
         } else {
