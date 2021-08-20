@@ -57,7 +57,7 @@ Future<void> setupServiceLocator() async {
         : HttpMangaPagesRepository(),
   );
   serviceLocator.registerSingleton<SearchRepository>(
-    Features.isMockHttp ? MockSearchRepository() : HttpSearchRepository(),
+    Features.isMockHttp ? MockSearchRepository() : ScrapeSearchRepository(),
   );
   serviceLocator.registerSingleton<FavouritesRepository>(
     Features.isMockHive

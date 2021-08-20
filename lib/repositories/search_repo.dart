@@ -1,14 +1,11 @@
-import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/models/search_result.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class SearchRepository {
   Future<OrError<SearchResultWithId, ErrorTypeWithId>> search({
@@ -20,9 +17,7 @@ abstract class SearchRepository {
   });
 }
 
-class HttpSearchRepository extends SearchRepository {
-  // TODO: api key
-  // final _repo = serviceLocator.get<ApiKeyRepository>();
+class ScrapeSearchRepository extends SearchRepository {
   @override
   Future<OrError<SearchResultWithId, ErrorTypeWithId>> search({
     String name,
@@ -31,12 +26,7 @@ class HttpSearchRepository extends SearchRepository {
     int status,
     int id,
   }) async {
-    // https://onma.me/api/v3/advanced-search?API_key=1rdrYtOP0Ghgetyt65TY6
-    // &name=one%20piece
-    // &category=drama,action
-    // &type=1
-    // &status=1
-
+    // TODO: complete advanced search
     /*final data = await _repo.get();
     final parameters = Map<String, dynamic>();
     parameters.putIfAbsent('API_key', () => data.key);
@@ -57,29 +47,41 @@ class HttpSearchRepository extends SearchRepository {
       parameters,
     );*/
 
-    final url = Uri.https(Constants.domain, Constants.mostViewed);
-
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorTypeWithId(ErrorType.noInternet, id));
       }
       try {
-        print('==============');
-        var newUrl = url.toString().replaceAll('%2C', ',');
-        newUrl = newUrl.toString().replaceAll('+%E2%80%8E', '%20');
-        print('url:$newUrl');
-        var response = await http.get(newUrl);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final list = (jsonResponse['data'] as List)
-              ?.map((manga) => SearchResult.fromJson(manga))
-              ?.toList();
+        final webScraper = WebScraper(Constants.domain);
+        if (await webScraper.loadWebPage(Constants.search + name)) {
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
+          final f =
+              webScraper.getElement('ul.manga_pic_list > li > p.view', []);
+          final g =
+              webScraper.getElement('ul.manga_pic_list > li > p.keyWord', []);
+
+          final list = <SearchResult>[];
+          for (int i = 0; i < a.length; i++) {
+            list.add(SearchResult(
+              author:
+                  (f[i * 5]['title'] as String).replaceFirst('Author: ', ''),
+              categories: (g[i]['title'] as String).split(','),
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
+            ));
+          }
           return OrError.value(SearchResultWithId(list, id));
         } else {
           return OrError.error(ErrorTypeWithId(ErrorType.serverError, id));
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print(e.toString());
         return OrError.error(ErrorTypeWithId(ErrorType.networkError, id));
       }
     } on PlatformException catch (_) {
@@ -95,28 +97,16 @@ class MockSearchRepository extends SearchRepository {
     final list = List.generate(
       10,
       (index) => SearchResult(
-        id: index + 1,
-        slug: generator.mangaSlug(),
-        name: generator.mangaName(),
-        cover: generator.mangaCoverAsset(),
-        lastChapter: Chapter(
-            name: "الإنسان العاقل، وحيد كليًا",
-            slug: (index + 1).toString(),
-            number: (index + 1).toString(),
-            volume: (index + 1).toString(),
-            url: ""),
-        authors: [
-          Author(
-            id: generator.generateNumber(100),
-            name: generator.mangaAuthor(),
-          )
-        ],
-        categories: [
-          "action",
-          "adventure",
-          "comedy",
-        ],
-      ),
+          slug: generator.mangaSlug(),
+          name: generator.mangaName(),
+          cover: generator.mangaCoverAsset(),
+          categories: [
+            "action",
+            "adventure",
+            "comedy",
+          ],
+          url: '',
+          author: 'Some author'),
     );
     return Future.delayed(
       Duration(seconds: 1),

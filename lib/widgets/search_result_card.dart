@@ -48,9 +48,7 @@ class SearchResultCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    Language.of(context).author +
-                        ' : ' +
-                        searchResult.authors[0].name,
+                    Language.of(context).author + ' : ' + searchResult.author,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -66,28 +64,6 @@ class SearchResultCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                     ),
-                    strutStyle: AppFonts.getStyle(),
-                  ),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: Language.of(context).latestChapters + ' : ',
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                        TextSpan(
-                          text: searchResult.lastChapter.number,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: AppFonts.english,
-                          ),
-                        ),
-                      ],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     strutStyle: AppFonts.getStyle(),
                   ),
                 ],

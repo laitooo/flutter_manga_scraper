@@ -50,7 +50,6 @@ class MockSearchHistoryRepository extends SearchHistoryRepository {
     final list = List.generate(
       generator.generateNumber(5),
       (index) => SearchHistory(
-        id: index + 1,
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
       ),
