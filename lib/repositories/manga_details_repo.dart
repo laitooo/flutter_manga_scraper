@@ -30,8 +30,6 @@ class ScrapeMangaDetailsRepository extends MangaDetailsRepository {
           final d =
               webScraper.getElement('div.detail_content > div > img', ['src']);
 
-          print('*******' * 15);
-          print('url:' + Constants.domain + '/manga/$slug/');
           final name = webScraper.getElement('h1.title-top', []).first['title'];
           final chapters = <Chapter>[];
           for (int i = 1; i < a.length; i++) {
@@ -64,7 +62,6 @@ class ScrapeMangaDetailsRepository extends MangaDetailsRepository {
           return OrError.error(ErrorType.serverError);
         }
       } on WebScraperException catch (e) {
-        print("Errrrrrrrror");
         print(e.toString());
         return OrError.error(ErrorType.networkError);
       }

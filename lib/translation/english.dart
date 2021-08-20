@@ -46,6 +46,8 @@ class EnglishLanguage extends Language {
   @override
   String get status => "Status";
   @override
+  String get rate => "Rate";
+  @override
   String get type => "Type";
   @override
   String get aboutTheApp => "About the app";
