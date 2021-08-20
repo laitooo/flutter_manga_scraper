@@ -54,19 +54,22 @@ class _MangaCategoryScreenState extends State<_MangaCategoryScreen> {
             .add(LoadMangaList(widget.category)),
         getItemsCount: (state) => state.list.length,
         buildItemWidget: (state, index) {
-          return MangaGridCard.fromMangaListItem(
-            mangaItem: state.list[index],
-            onClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MangaDetailsScreen(
-                    slug: state.list[index].slug,
-                    name: state.list[index].name,
+          return Container(
+            margin: EdgeInsets.fromLTRB(8, 5, 8, 10),
+            child: MangaGridCard.fromMangaListItem(
+              mangaItem: state.list[index],
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MangaDetailsScreen(
+                      slug: state.list[index].slug,
+                      name: state.list[index].name,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       );

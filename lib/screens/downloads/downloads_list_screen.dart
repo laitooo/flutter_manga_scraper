@@ -43,6 +43,7 @@ class DownloadsScreenState extends State<_DownloadsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       body: BlocConsumer<DownloadsListBloc, DownloadsListState>(
           listener: (context, state) {
         if (state is DownloadsListError &&
