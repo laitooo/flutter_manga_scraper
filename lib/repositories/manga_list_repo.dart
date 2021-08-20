@@ -69,16 +69,14 @@ class MockMangaListRepository extends MangaListRepository {
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         lastChapter: Chapter(
-          id: generator.generateNumber(10000),
-          name: "الإنسان العاقل، وحيد كليًا",
-          slug: generator.generateNumber(1000).toString(),
-          number: generator.generateNumber(1000).toString(),
-          mangaId: index + 1,
-        ),
+            name: "الإنسان العاقل، وحيد كليًا",
+            slug: generator.generateNumber(1000).toString(),
+            number: generator.generateNumber(1000).toString(),
+            url: ""),
         categories: [
-          Category(id: 1, name: "أكشن", slug: "action"),
-          Category(id: 2, name: "مغامرة", slug: "adventure"),
-          Category(id: 3, name: "كوميدي", slug: "comedy")
+          "action",
+          "adventure",
+          "comedy",
         ],
       ),
     );

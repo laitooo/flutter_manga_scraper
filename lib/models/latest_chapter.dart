@@ -10,13 +10,18 @@ class LatestChapter {
   final String name;
   final String cover;
   final String number;
+  final String volume;
 
-  LatestChapter({@required this.slug,
+  LatestChapter({
+    @required this.slug,
     @required this.url,
     @required this.name,
-      @required this.cover,
-      @required this.number,
-      });
+    @required this.cover,
+    @required this.number,
+    @required this.volume,
+  });
+
+  String get domain => url.split('/')[2];
 
   factory LatestChapter.fromJson(Map<String, dynamic> json) =>
       _$LatestChapterFromJson(json);

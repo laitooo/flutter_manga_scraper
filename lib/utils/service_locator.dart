@@ -49,7 +49,7 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerSingleton<MangaDetailsRepository>(
     Features.isMockHttp
         ? MockMangaDetailsRepository()
-        : HttpMangaDetailsRepository(),
+        : ScrapeMangaDetailsRepository(),
   );
   serviceLocator.registerSingleton<MangaPagesRepository>(
     Features.isMockHttp

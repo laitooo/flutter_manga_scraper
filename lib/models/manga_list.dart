@@ -14,7 +14,7 @@ class MangaListItem {
   final int views;
   @JsonKey(name: "item_rating")
   final String rate;
-  final List<Category> categories;
+  final List<String> categories;
   @JsonKey(defaultValue: false)
   bool isFav;
 

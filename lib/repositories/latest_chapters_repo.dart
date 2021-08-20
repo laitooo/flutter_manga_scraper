@@ -21,24 +21,24 @@ class ScrapeLatestChaptersRepository extends LatestChaptersRepository {
       }
       try {
         final webScraper = WebScraper(Constants.domain);
-        if (await webScraper
-            .loadWebPage(Constants.latestChapters + page.toString())) {
-          final ass = webScraper
-              .getElement('div.list-truyen-item-wrap > a', ['href', 'title']);
-          final covers = webScraper
-              .getElement('div.list-truyen-item-wrap > a > img', ['src']);
+        if (await webScraper.loadWebPage(Constants.latestChapters)) {
+          final a = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
+          final b = webScraper.getElement(
+              'ul.manga_pic_list > li > a.manga_cover > img', ['src']);
+          final c = webScraper.getElement(
+              'ul.manga_pic_list > li > p.new_chapter > a', ['href']);
 
-          print('ass: ' + ass.toString());
-          print('covers: ' + covers.toString());
           final list = <LatestChapter>[];
-          for (int i = 0; i < covers.length; i++) {
+          for (int i = 0; i < a.length; i++) {
+            final d = (c[i]['attributes']['href'] as String).split('/');
             list.add(LatestChapter(
-              url: ass[i * 2]['attributes']['href'],
-              name: ass[i * 2]['attributes']['title'],
-              slug: ass[i * 2]['attributes']['href'],
-              cover: covers[i]['attributes']['src'],
-              number: (ass[i * 2 + 1]['attributes']['href'] as String).split('/')
-                  .last.substring(8),
+              url: Constants.domain + a[i]['attributes']['href'],
+              name: a[i]['attributes']['title'],
+              slug: (a[i]['attributes']['href'] as String).split('/')[2],
+              cover: b[i]['attributes']['src'],
+              number: d[d.length == 5 ? 3 : 4].replaceAll('c', ''),
+              volume: d.length == 5 ? 'null' : d[3].replaceAll('v', ''),
             ));
           }
           return OrError.value(list);
@@ -46,7 +46,6 @@ class ScrapeLatestChaptersRepository extends LatestChaptersRepository {
           return OrError.error(ErrorType.serverError);
         }
       } on WebScraperException catch (e) {
-        print("Errrrrrrrror");
         print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
@@ -64,6 +63,7 @@ class MockLatestChaptersRepository extends LatestChaptersRepository {
       (index) => LatestChapter(
         cover: generator.mangaCoverAsset(),
         number: generator.generateNumber(300).toString(),
+        volume: generator.generateNumber(50).toString(),
         slug: generator.mangaSlug(),
         name: generator.mangaName(),
         url: '',

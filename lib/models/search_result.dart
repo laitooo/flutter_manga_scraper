@@ -12,7 +12,7 @@ class SearchResult {
   final String cover;
   final Chapter lastChapter;
   final List<Author> authors;
-  final List<Category> categories;
+  final List<String> categories;
 
   SearchResult({
     @required this.id,

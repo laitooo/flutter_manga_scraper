@@ -20,25 +20,6 @@ String mangaTypeToString(int typeId, BuildContext context) {
   }
 }
 
-enum MangaStatus {
-  OnGoing, // 1
-  Completed, // 2
-  Stopped, // 3
-}
-
-String mangaStatusToString(int statusId, BuildContext context) {
-  switch (MangaStatus.values[statusId - 1]) {
-    case MangaStatus.OnGoing:
-      return Language.of(context).onGoing;
-    case MangaStatus.Completed:
-      return Language.of(context).completed;
-    case MangaStatus.Stopped:
-      return Language.of(context).stopped;
-    default:
-      return "Error";
-  }
-}
-
 enum MangaCategories {
   Action, // 1
   Adventure, // 2

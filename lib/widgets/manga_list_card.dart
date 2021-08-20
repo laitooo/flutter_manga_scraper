@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/models/manga_list.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
@@ -57,7 +56,7 @@ class MangaListCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    categoriesToString(manga.categories),
+                    manga.categories.toString(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -145,11 +144,11 @@ class MangaListCard extends StatelessWidget {
     );
   }
 
-  String categoriesToString(List<Category> list) {
+  /*String categoriesToString(List<Category> list) {
     String text = '';
     for (int i = 0; i < list.length; i++) {
       text += list[i].name + (i != list.length - 1 ? ' , ' : '');
     }
     return text;
-  }
+  }*/
 }

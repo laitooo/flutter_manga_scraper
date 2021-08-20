@@ -13,9 +13,9 @@ class Constants {
   static final posts = 'posts';
   static final advancedSearch = 'advanced-search';
 
-  static final domain = "https://mangakakalot.com";
+  static final domain = "https://www.mangatown.com";
   static final domain2 = "https://readmanganato.com";
   static final mostViewed =
       "/manga_list?type=topview&category=all&state=all&page=1";
-  static final latestChapters = "/manga_list?type=latest&category=all&state=all&page=";
+  static final latestChapters = "/latest/";
 }

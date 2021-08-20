@@ -1,50 +1,64 @@
-import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:manga_scraper/models/manga_detail.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
-
-// TODO: api key
-//import 'api_key_repo.dart';
+import 'package:web_scraper/web_scraper.dart';
 
 abstract class MangaDetailsRepository {
   Future<OrError<MangaDetail, ErrorType>> load(String slug);
 }
 
-class HttpMangaDetailsRepository extends MangaDetailsRepository {
-  //final _repo = serviceLocator.get<ApiKeyRepository>();
-
+class ScrapeMangaDetailsRepository extends MangaDetailsRepository {
   @override
   Future<OrError<MangaDetail, ErrorType>> load(String slug) async {
-    /*final data = await _repo.get();
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.mangaInfo + '/$slug',
-      {'API_key': data.key},
-    );*/
-
-    final url = Uri.https(Constants.domain, Constants.mostViewed);
-
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
         return OrError.error(ErrorType.noInternet);
       }
       try {
-        var response = await http.get(url);
-        if (response.statusCode == 200) {
-          var jsonResponse = convert.jsonDecode(response.body);
-          final data = jsonResponse['data']['infoManga'][0];
-          return OrError.value(MangaDetail.fromJson(data));
+        final webScraper = WebScraper(Constants.domain2);
+        if (await webScraper.loadWebPage('/' + slug)) {
+          final a = webScraper
+              .getElement('div.story-info-left > span > img', ['src', 'title']);
+          final b = webScraper
+              .getElement('table.variations-tableInfo > tbody > tr > td', []);
+          final c = webScraper
+              .getElement('div.story-info-right-extent > p > em ', []);
+          final d =
+              webScraper.getElement('div.panel-story-info-description', []);
+          final e = webScraper.getElement(
+              'table.variations-tableInfo > tbody > tr > td > a', []);
+
+          print('*******' * 15);
+          print('url:' + Constants.domain2 + "/" + slug);
+          print("a:" + a.toString());
+          print("c:" + c.toString());
+          final categories = <String>[];
+          for (int i = 1; i < e.length; i++) {
+            categories.add(e[i]['title']);
+          }
+          final details = MangaDetail(
+              name: a.first['attributes']['title'],
+              slug: slug,
+              status: b[5]['title'],
+              rate: c.first['title'],
+              author: b[3]['title'],
+              summary: d.first['title'],
+              cover: a.first['attributes']['src'],
+              categories: categories,
+              chapters: [],
+              isFav: false);
+          return OrError.value(details);
         } else {
           return OrError.error(ErrorType.serverError);
         }
-      } on SocketException catch (_) {
+      } on WebScraperException catch (e) {
+        print("Errrrrrrrror");
+        print(e.toString());
         return OrError.error(ErrorType.networkError);
       }
     } on PlatformException catch (_) {
@@ -57,29 +71,25 @@ class MockMangaDetailsRepository extends MangaDetailsRepository {
   @override
   Future<OrError<MangaDetail, ErrorType>> load(String slug) async {
     final mangaDetail = MangaDetail(
-      id: generator.generateNumber(1000),
       name: generator.mangaName(),
       slug: generator.mangaSlug(),
-      status: generator.generateNumber(3),
-      type: generator.generateNumber(3),
+      status: '',
       rate: "4.38",
       author: "Inagaki Riichiro",
-      releaseDate: (1980 + generator.generateNumber(40)).toString(),
       summary: "كل البشر على كوكب الارض ... قد تحولوا إلى صخر أصم !!!",
       cover: generator.mangaCoverAsset(),
       categories: [
-        Category(id: 1, name: "أكشن", slug: "action"),
-        Category(id: 2, name: "مغامرة", slug: "adventure"),
-        Category(id: 3, name: "كوميدي", slug: "comedy")
+        "action",
+        "adventure",
+        "comedy",
       ],
       chapters: List.generate(
         generator.generateNumber(300),
         (index) => Chapter(
-          id: generator.generateNumber(10000),
           name: "الإنسان العاقل، وحيد كليًا",
           slug: (index + 1).toString(),
           number: (index + 1).toString(),
-          mangaId: generator.generateNumber(1000),
+          url: "",
           isWatched: generator.generateBool(),
         ),
       ),

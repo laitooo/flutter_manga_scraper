@@ -100,12 +100,10 @@ class MockSearchRepository extends SearchRepository {
         name: generator.mangaName(),
         cover: generator.mangaCoverAsset(),
         lastChapter: Chapter(
-          id: index + 1,
-          name: "الإنسان العاقل، وحيد كليًا",
-          slug: (index + 1).toString(),
-          number: (index + 1).toString(),
-          mangaId: generator.generateNumber(1000),
-        ),
+            name: "الإنسان العاقل، وحيد كليًا",
+            slug: (index + 1).toString(),
+            number: (index + 1).toString(),
+            url: ""),
         authors: [
           Author(
             id: generator.generateNumber(100),
@@ -113,9 +111,9 @@ class MockSearchRepository extends SearchRepository {
           )
         ],
         categories: [
-          Category(id: 1, name: "أكشن", slug: "action"),
-          Category(id: 2, name: "مغامرة", slug: "adventure"),
-          Category(id: 3, name: "كوميدي", slug: "comedy")
+          "action",
+          "adventure",
+          "comedy",
         ],
       ),
     );

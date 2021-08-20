@@ -71,7 +71,8 @@ class _AdvancedFilterDialogState extends State<AdvancedFilterDialog> {
                     ),
                   ),
                 ),
-                Divider(
+                // TODO: search by status
+                /*Divider(
                   thickness: 1,
                 ),
                 Padding(
@@ -103,7 +104,7 @@ class _AdvancedFilterDialogState extends State<AdvancedFilterDialog> {
                       },
                     ),
                   ),
-                ),
+                ),*/
                 Divider(
                   thickness: 1,
                 ),
