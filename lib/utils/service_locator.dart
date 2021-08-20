@@ -80,7 +80,9 @@ Future<void> setupServiceLocator() async {
         : MoorDownloadsListRepository(serviceLocator.get<MoorDatabase>()),
   );
   serviceLocator.registerSingleton<MangaListRepository>(
-    Features.isMockHttp ? MockMangaListRepository() : HttpMangaListRepository(),
+    Features.isMockHttp
+        ? MockMangaListRepository()
+        : ScrapeMangaListRepository(),
   );
   serviceLocator.registerSingleton<WatchedChaptersRepository>(
     Features.isMockHive

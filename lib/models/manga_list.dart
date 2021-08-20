@@ -6,9 +6,9 @@ part 'manga_list.g.dart';
 
 @JsonSerializable()
 class MangaListItem {
-  final int id;
   final String slug;
   final String name;
+  final String url;
   final String cover;
   final Chapter lastChapter;
   final int views;
@@ -19,9 +19,9 @@ class MangaListItem {
   bool isFav;
 
   MangaListItem(
-      {@required this.id,
-      @required this.slug,
+      {@required this.slug,
       @required this.name,
+      @required this.url,
       @required this.cover,
       @required this.lastChapter,
       @required this.views,
