@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manga_scraper/screens/home/home_drawer.dart';
+import 'package:manga_scraper/screens/home/tabs/favourites_screen.dart';
 import 'package:manga_scraper/screens/manga_list/manga_list_screen.dart';
 import 'package:manga_scraper/screens/search/seach_screen.dart';
 import 'package:manga_scraper/screens/downloads/downloads_list_screen.dart';
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    page = HomePage();
+    page = FavouritesScreen();
     isSearchIcon = true;
     isListIcon = false;
     isDeleteIcon = false;
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.getPrimaryColor(),
         toolbarHeight: 40,
         title: Text(
-          title ?? Language.of(context).homeScreen,
+          title ?? Language.of(context).favorites,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -130,8 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onWillPop: () async {
             if (!(page is HomePage)) {
               setState(() {
-                page = HomePage();
-                title = Language.of(context).homeScreen;
+                page = FavouritesScreen();
+                title = Language.of(context).favorites;
                 isSearchIcon = true;
                 isListIcon = false;
                 isDeleteIcon = false;
@@ -141,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             return false;
           },
-          child: page ?? HomePage()),
+          child: page ?? FavouritesScreen()),
     );
   }
 

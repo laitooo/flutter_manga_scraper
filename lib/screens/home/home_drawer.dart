@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:manga_scraper/screens/downloads/downloads_list_screen.dart';
 import 'package:manga_scraper/screens/home/drawer_item.dart';
-import 'package:manga_scraper/screens/home/home_page.dart';
+import 'package:manga_scraper/screens/home/tabs/favourites_screen.dart';
+import 'package:manga_scraper/screens/home/tabs/latest_chapters_screen.dart';
+import 'package:manga_scraper/screens/home/tabs/most_viewed_screen.dart';
 import 'package:manga_scraper/screens/manga_list/manga_list_screen.dart';
 import 'package:manga_scraper/screens/settings/settings_screen.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
@@ -54,9 +56,21 @@ class HomeDrawer extends StatelessWidget {
               ),
               SizedBox(height: 20),
               DrawerItem(
-                current: HomePageType.home,
-                icon: 'assets/icons/home_icon.svg',
-                page: HomePage(),
+                current: HomePageType.favourites,
+                icon: 'assets/icons/fav_icon.svg',
+                page: FavouritesScreen(),
+                onClick: onPageChanged,
+              ),
+              DrawerItem(
+                current: HomePageType.latest,
+                icon: 'assets/icons/latest_chapters_icon.svg',
+                page: LatestChaptersScreen(),
+                onClick: onPageChanged,
+              ),
+              DrawerItem(
+                current: HomePageType.popular,
+                icon: 'assets/icons/most_viewed_icon.svg',
+                page: MostViewedScreen(),
                 onClick: onPageChanged,
               ),
               DrawerItem(

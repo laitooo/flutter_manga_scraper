@@ -224,11 +224,11 @@ enum ReadingMode {
 }
 
 enum HomePageType {
-  home,
+  favourites,
+  popular,
+  latest,
   mangaList,
-  news,
   downloads,
-  chat,
   settings,
 }
 
