@@ -110,6 +110,15 @@ abstract class Language {
   String get magic;
   String get webtoon;
   String get doujinshi;
+  String get fourKoma;
+  String get cooking;
+  String get genderBender;
+  String get music;
+  String get reverseHarem;
+  String get shotakon;
+  String get youkai;
+  String get smut;
+  String get suspense;
 
   String get savedScreenshotToStorage;
   String get someErrorOccurred;

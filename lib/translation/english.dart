@@ -210,6 +210,24 @@ class EnglishLanguage extends Language {
   String get vampire => "Vampire";
   @override
   String get webtoon => "Webtoon";
+  @override
+  String get cooking => "Cooking";
+  @override
+  String get fourKoma => "4-koma";
+  @override
+  String get genderBender => "Gender bender";
+  @override
+  String get music => "Music";
+  @override
+  String get reverseHarem => "Reverse harem";
+  @override
+  String get shotakon => "Shotakon";
+  @override
+  String get smut => "Smut";
+  @override
+  String get suspense => "Suspense";
+  @override
+  String get youkai => "Youkai";
 
   @override
   String get savedScreenshotToStorage => 'Saved image to storage';
