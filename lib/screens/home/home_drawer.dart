@@ -6,8 +6,6 @@ import 'package:manga_scraper/screens/home/tabs/latest_chapters_screen.dart';
 import 'package:manga_scraper/screens/home/tabs/most_viewed_screen.dart';
 import 'package:manga_scraper/screens/manga_list/manga_list_screen.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
-import 'package:manga_scraper/theme/app_fonts.dart';
-import 'package:manga_scraper/translation/language.dart';
 import 'package:manga_scraper/utils/enums.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -28,29 +26,16 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: AppColors.getPrimaryColor(),
+        color: AppColors.getAccentColor(),
         child: SafeArea(
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/manga_logo.png',
-                      width: 50,
-                      height: 50,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      Language.of(context).appName,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
-                      strutStyle: AppFonts.getStyle(),
-                    )
-                  ],
+                child: Image.asset(
+                  'assets/images/logo6.png',
+                  width: 250,
+                  height: 200,
                 ),
               ),
               SizedBox(height: 20),
