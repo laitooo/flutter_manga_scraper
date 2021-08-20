@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manga_scraper/blocs/favourites_bloc.dart';
 import 'package:manga_scraper/blocs/manga_list_bloc.dart';
-import 'package:manga_scraper/models/favourite.dart';
 import 'package:manga_scraper/screens/details/manga_details_screen.dart';
 import 'package:manga_scraper/translation/language.dart';
 import 'package:manga_scraper/utils/enums.dart';
@@ -58,7 +56,6 @@ class _MangaCategoryScreenState extends State<_MangaCategoryScreen> {
         buildItemWidget: (state, index) {
           return MangaGridCard.fromMangaListItem(
             mangaItem: state.list[index],
-            isFav: state.list[index].isFav,
             onClick: () {
               Navigator.push(
                 context,
@@ -69,31 +66,6 @@ class _MangaCategoryScreenState extends State<_MangaCategoryScreen> {
                   ),
                 ),
               );
-            },
-            onFavClicked: () {
-              if (state.list[index].isFav) {
-                BlocProvider.of<FavouritesBloc>(context).add(
-                  DeleteFavourite(state.list[index].slug),
-                );
-                context.showSnackBar(
-                  Language.of(context).removedFromFavourites,
-                  1,
-                );
-                setState(() {
-                  state.list[index].isFav = false;
-                });
-              } else {
-                BlocProvider.of<FavouritesBloc>(context).add(
-                  SaveFavourite(Favourite.fromMangaListItem(state.list[index])),
-                );
-                context.showSnackBar(
-                  Language.of(context).addedToFavourites,
-                  1,
-                );
-                setState(() {
-                  state.list[index].isFav = true;
-                });
-              }
             },
           );
         },

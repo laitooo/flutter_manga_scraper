@@ -182,6 +182,7 @@ class _OfflineReaderScreenState extends State<_OfflineReaderScreen> {
                                   widget.download.name,
                                   widget.download.slug,
                                   widget.download.number,
+                                  widget.download.volume,
                                   context);
                             },
                           );

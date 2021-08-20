@@ -11,11 +11,11 @@ class ShareLink {
         ' ' +
         Language.of(context).usingThisLink +
         ':\n' +
-        'https://${Constants.domain}/manga/$slug');
+        '${Constants.domain}/manga/$slug/');
   }
 
-  void shareChapter(
-      String name, String slug, String chapter, BuildContext context) async {
+  void shareChapter(String name, String slug, String chapter, String volume,
+      BuildContext context) async {
     await Share.share(Language.of(context).readChapter +
         ' ' +
         chapter +
@@ -26,6 +26,8 @@ class ShareLink {
         ' ' +
         Language.of(context).usingThisLink +
         ':\n' +
-        'https://${Constants.domain}/manga/$slug/$chapter');
+        '${Constants.domain}/manga/$slug/' +
+        (volume == 'null' ? '' : '$volume/') +
+        '$chapter/');
   }
 }
