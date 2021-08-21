@@ -147,6 +147,7 @@ class _OfflineReaderScreenState extends State<_OfflineReaderScreen> {
                   isTopVisible: isTopVisible,
                   isOffline: true,
                   slug: widget.download.slug,
+                  volume: widget.download.volume,
                   chapter: widget.download.number,
                   showMenuCallback: () {
                     showDialog(

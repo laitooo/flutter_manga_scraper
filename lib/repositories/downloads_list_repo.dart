@@ -188,7 +188,8 @@ class MockDownloadsListRepository extends DownloadsListRepository {
         hasFailed: generator.generateBool(),
         images: maxImages,
         progress: generator.generateNumber(maxImages),
-        extension: generator.imageExtension(),
+        volume: generator.generateNumber(50).toString(),
+        first: '',
       );
     });
   }
@@ -205,7 +206,8 @@ class MockDownloadsListRepository extends DownloadsListRepository {
       progress: justStarted ? 0 : generator.generateNumber(50),
       hasFailed: justStarted ? false : generator.generateBool(),
       images: generator.generateNumber(50),
-      extension: generator.imageExtension(),
+      volume: generator.generateNumber(50).toString(),
+      first: '',
     );
   }
 }

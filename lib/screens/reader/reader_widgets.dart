@@ -121,6 +121,7 @@ class TobBarWidget extends StatelessWidget {
   final bool isOffline;
   final String slug;
   final String chapter;
+  final String volume;
   final Function showMenuCallback;
   final Function showChaptersCallback;
 
@@ -129,6 +130,7 @@ class TobBarWidget extends StatelessWidget {
     this.isTopVisible,
     this.slug,
     this.chapter,
+    this.volume,
     this.showMenuCallback,
     this.showChaptersCallback,
     this.isOffline,
@@ -173,40 +175,35 @@ class TobBarWidget extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 20),
               strutStyle: AppFonts.getStyle(),
             ),
-            if (!isOffline)
-              IconButton(
-                onPressed: () {
-                  final mangaDetails =
-                      BlocProvider.of<MangaDetailsBloc>(context)
-                          .state
-                          .mangaDetail;
-                  final images =
-                      BlocProvider.of<MangaPagesBloc>(context).state.list;
+            isOffline
+                ? SizedBox(width: 25)
+                : IconButton(
+                    onPressed: () {
+                      final mangaDetails =
+                          BlocProvider.of<MangaDetailsBloc>(context)
+                              .state
+                              .mangaDetail;
+                      final images =
+                          BlocProvider.of<MangaPagesBloc>(context).state.list;
 
-                  String tmpExtension;
-                  if (images.length > 1) {
-                    tmpExtension = images[1].split('.').last;
-                  }
-                  final extension =
-                      tmpExtension ?? images.first.split('.').last;
-
-                  showDialog(
-                    context: context,
-                    builder: (context) => DownloadDialog(
-                      number: chapter,
-                      mangaDetail: mangaDetails,
-                      images: images.length,
-                      extension: extension,
+                      showDialog(
+                        context: context,
+                        builder: (context) => DownloadDialog(
+                          number: chapter,
+                          mangaDetail: mangaDetails,
+                          images: images.length,
+                          firstImage: images.first,
+                          volume: volume,
+                        ),
+                      );
+                    },
+                    icon: SvgPicture.asset(
+                      'assets/icons/download_icon.svg',
+                      color: Colors.white,
+                      width: 25,
+                      height: 25,
                     ),
-                  );
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/download_icon.svg',
-                  color: Colors.white,
-                  width: 25,
-                  height: 25,
-                ),
-              ),
+                  ),
           ],
         ),
       ),
