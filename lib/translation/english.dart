@@ -32,7 +32,7 @@ class EnglishLanguage extends Language {
   @override
   String get japaneseManga => "Japanese manga";
   @override
-  String get koreanManhua => "Korean manhua";
+  String get koreanManhwa => "Korean manhua";
   @override
   String get onGoing => "On going";
   @override
@@ -274,4 +274,6 @@ class EnglishLanguage extends Language {
   String get anotherDownloadInProgress => 'Another download is in progress';
   @override
   String get errorDeletingChapters => 'Error while deleting chapters';
+  @override
+  String get showAll => 'Show all';
 }

@@ -3,7 +3,7 @@ import 'package:manga_scraper/translation/language.dart';
 
 enum MangaType {
   JapaneseManga, // 1
-  KoreanManhua, // 2
+  KoreanManhwa, // 2
   ChineseManhua, // 3
 }
 
@@ -11,10 +11,29 @@ String mangaTypeToString(int typeId, BuildContext context) {
   switch (MangaType.values[typeId - 1]) {
     case MangaType.JapaneseManga:
       return Language.of(context).japaneseManga;
-    case MangaType.KoreanManhua:
-      return Language.of(context).koreanManhua;
+    case MangaType.KoreanManhwa:
+      return Language.of(context).koreanManhwa;
     case MangaType.ChineseManhua:
       return Language.of(context).chineseManhua;
+    default:
+      return "Error";
+  }
+}
+
+enum MangaStatus {
+  Completed, // 1
+  Ongoing, // 2
+  Both, // 3
+}
+
+String mangaStatusToString(int statusId, BuildContext context) {
+  switch (MangaStatus.values[statusId - 1]) {
+    case MangaStatus.Completed:
+      return Language.of(context).completed;
+    case MangaStatus.Ongoing:
+      return Language.of(context).onGoing;
+    case MangaStatus.Both:
+      return Language.of(context).showAll;
     default:
       return "Error";
   }
@@ -133,78 +152,77 @@ String mangaCategoryToString(int categoryId, BuildContext context) {
   }
 }
 
-// ignore: missing_return
 String mangaCategoryToEnglishString(int categoryId, BuildContext context) {
   switch (MangaCategories.values[categoryId]) {
     case MangaCategories.Action:
-      return 'action';
+      return 'Action';
     case MangaCategories.Adventure:
-      return 'adventure';
+      return 'Adventure';
     case MangaCategories.Comedy:
-      return 'comedy';
+      return 'Comedy';
     case MangaCategories.Drama:
-      return 'drama';
+      return 'Drama';
     case MangaCategories.Ecchi:
-      return 'ecchi';
+      return 'Ecchi';
     case MangaCategories.Fantasy:
-      return 'fantasy';
+      return 'Fantasy';
     case MangaCategories.Harem:
-      return 'harem';
+      return 'Harem';
     case MangaCategories.Historical:
-      return 'historical';
+      return 'Historical';
     case MangaCategories.Horror:
-      return 'horror';
+      return 'Horror';
     case MangaCategories.MartialArts:
-      return 'martial_arts';
+      return 'Martial+Arts';
     case MangaCategories.Mature:
-      return 'mature';
+      return 'Mature';
     case MangaCategories.Mecha:
-      return 'mecha';
+      return 'Mecha';
     case MangaCategories.Mystery:
-      return 'mystery';
+      return 'Mystery';
     case MangaCategories.OneShot:
-      return 'one_shot';
+      return 'One+Shot';
     case MangaCategories.Psychological:
-      return 'psychological';
+      return 'Psychological';
     case MangaCategories.Romance:
-      return 'romance';
+      return 'Romance';
     case MangaCategories.SchoolLife:
-      return 'school_life';
+      return 'School+Life';
     case MangaCategories.Scifi:
-      return 'sci_fi';
+      return 'Sci+Fi';
     case MangaCategories.SliceOfLife:
-      return 'slice_of_life';
+      return 'Slice+Of+Life';
     case MangaCategories.Sports:
-      return 'sports';
+      return 'Sports';
     case MangaCategories.Supernatural:
-      return 'supernatural';
+      return 'Supernatural';
     case MangaCategories.Tragedy:
-      return 'tragedy';
+      return 'Tragedy';
     case MangaCategories.Vampire:
-      return 'vampire';
+      return 'Vampire';
     case MangaCategories.Webtoon:
       return 'Webtoons';
     case MangaCategories.Doujinshi:
-      return 'doujinshi';
+      return 'Doujinshi';
     case MangaCategories.FourKoma:
-      return '4_koma';
+      return '4+Koma';
     case MangaCategories.Cooking:
-      return 'cooking';
+      return 'Cooking';
     case MangaCategories.GenderBender:
-      return 'gender_bender';
+      return 'Gender+Bender';
     case MangaCategories.Music:
-      return 'music';
+      return 'Music';
     case MangaCategories.ReverseHarem:
-      return 'reverse_harem';
+      return 'Reverse+Harem';
     case MangaCategories.Shotacon:
-      return 'shotacon';
+      return 'Shotacon';
     case MangaCategories.Smut:
-      return 'smut';
+      return 'Smut';
     case MangaCategories.Suspense:
-      return 'suspense';
+      return 'Suspense';
     case MangaCategories.Youkai:
     default:
-      return 'youkai';
+      return 'Youkai';
   }
 }
 
@@ -212,8 +230,7 @@ String categoriesToString(List<bool> list, BuildContext context) {
   String tmp = '';
   for (int i = 0; i < MangaCategories.values.length; i++) {
     if (list[i])
-      tmp += mangaCategoryToEnglishString(i, context) +
-          (i != list.length - 1 ? ',' : '');
+      tmp += '&genres%5B' + mangaCategoryToEnglishString(i, context) + '%5D=1';
   }
   return tmp;
 }

@@ -18,9 +18,10 @@ abstract class Language {
   String get mostViewed;
   String get favorites;
   String get japaneseManga;
-  String get koreanManhua;
+  String get koreanManhwa;
   String get chineseManhua;
   String get onGoing;
+  String get showAll;
   String get stopped;
   String get completed;
   String get type;
