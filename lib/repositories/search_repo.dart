@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:manga_scraper/models/search_result.dart';
 import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
+import 'package:manga_scraper/utils/features.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
 import 'package:web_scraper/web_scraper.dart';
@@ -26,27 +27,38 @@ class ScrapeSearchRepository extends SearchRepository {
     int status,
     int id,
   }) async {
-    // TODO: complete advanced search
-    /*final data = await _repo.get();
-    final parameters = Map<String, dynamic>();
-    parameters.putIfAbsent('API_key', () => data.key);
-    if (name != null && name.isNotEmpty) {
-      parameters.putIfAbsent('name', () => name);
-    }
-    if (Features.isAdvanceSearch) {
-      if (category != null && category.isNotEmpty)
-        parameters.putIfAbsent('category', () => category);
-      if (type != null && type != 0)
-        parameters.putIfAbsent('type', () => type.toString());
-      if (status != null && status != 0)
-        parameters.putIfAbsent('status', () => status.toString());
-    }
-    var url = Uri.https(
-      data.domain,
-      data.path + Constants.advancedSearch,
-      parameters,
-    );*/
+    String query;
+    if (!Features.isAdvanceSearch) {
+      query = (name == null ? '' : name);
+    } else {
+      query = (name == null ? '' : name) + category;
+      switch (type) {
+        case 1:
+          query += '&type=manga';
+          break;
+        case 2:
+          query += '&type=manhwa';
+          break;
+        case 3:
+          query += '&type=manhua';
+          break;
+        case 0:
+        default:
+          query += '&type=';
+          break;
+      }
 
+      switch (status) {
+        case 1:
+          query += '&is_completed=1';
+          break;
+        case 2:
+          query += '&is_completed=0';
+          break;
+        default:
+          query += '&is_completed=';
+      }
+    }
     try {
       final result = await Connectivity().checkConnectivity();
       if (result == ConnectivityResult.none) {
@@ -54,7 +66,7 @@ class ScrapeSearchRepository extends SearchRepository {
       }
       try {
         final webScraper = WebScraper(Constants.domain);
-        if (await webScraper.loadWebPage(Constants.search + name)) {
+        if (await webScraper.loadWebPage(Constants.search + query)) {
           final a = webScraper.getElement(
               'ul.manga_pic_list > li > a.manga_cover', ['href', 'title']);
           final b = webScraper.getElement(
