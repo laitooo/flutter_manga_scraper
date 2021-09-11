@@ -27,9 +27,9 @@
 - Search for any manga you want.
 - Vertical and horizontal reading modes are available.
 - Manga categorized by genres.
+- Advanced search (by manga genres, type and status).
 
 ## TODO:
-- Implement advance search (by genres, type, status).
 - Make sure big images is working well
 - Make sure reader is working good for landscape.
 - Add retry download when a download fails.
