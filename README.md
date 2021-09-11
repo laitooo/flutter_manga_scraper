@@ -18,7 +18,7 @@
 
 
 
-## Feaures:
+## Features:
 - Reading most popular and latest releases mangas.
 - Two languages available (Ar, En).
 - Track your manga reading and add manga to your favourites.
@@ -26,13 +26,12 @@
 - Mock repositories can be used for testing.
 - Search for any manga you want.
 - Vertical and horizontal reading modes are available.
-- Manga catogirzed by generes.
+- Manga categorized by genres.
 
 ## TODO:
 - Implement advance search (by genres, type, status).
 - Make sure big images is working well
 - Make sure reader is working good for landscape.
-- Add images placeholder.
 - Add retry download when a download fails.
 - Multi-chapters download screen.
 

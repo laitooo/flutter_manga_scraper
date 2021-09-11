@@ -7,6 +7,7 @@ import 'package:manga_scraper/models/manga_list.dart';
 import 'package:manga_scraper/theme/app_colors.dart';
 import 'package:manga_scraper/theme/app_fonts.dart';
 import 'package:manga_scraper/utils/features.dart';
+import 'package:manga_scraper/widgets/progress_indicator.dart';
 
 class MangaGridCard extends StatelessWidget {
   final String name;
@@ -83,9 +84,11 @@ class MangaGridCard extends StatelessWidget {
                   if (progress == null) {
                     return widget;
                   }
-                  return SizedBox(
-                    width: 118,
-                    height: 195,
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 9, vertical: 47),
+                    child: AppProgressIndicator.custom(
+                      size: 100,
+                    ),
                   );
                 },
               ),
