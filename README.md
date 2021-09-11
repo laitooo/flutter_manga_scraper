@@ -12,7 +12,7 @@
     <a href="https://www.mangatown.com/hot/">Manga town</a>
     <br/>
     <br/>
-    <a href="https://github.com/github_username/repo_name/issues">Report a Bug</a>
+    <a href="https://github.com/laitooo/flutter_manga_scraper/issues">Report a Bug</a>
   </p>
 </p>
 
