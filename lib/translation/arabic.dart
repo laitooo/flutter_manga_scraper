@@ -32,7 +32,7 @@ class ArabicLanguage extends Language {
   @override
   String get japaneseManga => "مانجا يابانية";
   @override
-  String get koreanManhua => "مانهوا كورية";
+  String get koreanManhwa => "مانهوا كورية";
   @override
   String get onGoing => "مستمرة";
   @override
@@ -275,4 +275,6 @@ class ArabicLanguage extends Language {
   String get anotherDownloadInProgress => 'هناك تحميل آخر جاري الآن';
   @override
   String get errorDeletingChapters => 'خطأ أثناء حذف الفصول';
+  @override
+  String get showAll => 'عرض الكل';
 }
