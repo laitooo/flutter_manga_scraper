@@ -42,8 +42,6 @@ class ScrapeMangaPagesRepository extends MangaPagesRepository {
             else
               list.add(first.replaceFirst('001.jpg', '$d.jpg'));
           }
-          print(list);
-
           return OrError.value(list);
         } else {
           return OrError.error(ErrorType.serverError);
