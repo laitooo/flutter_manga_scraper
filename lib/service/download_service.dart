@@ -64,6 +64,39 @@ Future<void> onStart() async {
       }
     }
 
+    if (event['action'] == ServiceDownloadAction.retryDownload.toText()) {
+      DownloadData download = DownloadData.fromJson(event['download']);
+      final companion = download.toCompanion(false).copyWith(
+            isDownloading: Value(false),
+            hasFailed: Value(false),
+            progress: Value(0),
+          );
+      await _downloadListRepo.update(companion);
+      service.sendData({
+        'status': UiDownloadAction.retriedDownload.toText(),
+        'slug': companion.slug.value,
+        'number': companion.number.value,
+        'progress': companion.progress.value,
+        'isDownloading': companion.isDownloading.value,
+        'hasFailed': companion.hasFailed.value,
+        'dialog': false,
+      });
+
+      Future.delayed(Duration(seconds: 1), () {
+        chapters.add(companion);
+        if (chapters.length == 1) {
+          _startDownloading(chapters, service, database);
+        } else {
+          service.sendData({
+            'status': UiDownloadAction.addedToQueue.toText(),
+            'slug': companion.slug.value,
+            'number': companion.number.value,
+            'dialog': true,
+          });
+        }
+      });
+    }
+
     if (event['action'] == ServiceDownloadAction.streamDownloads.toText()) {
       final list = await _downloadListRepo.load();
       if (list.isValue) {

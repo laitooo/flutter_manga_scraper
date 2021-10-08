@@ -55,9 +55,18 @@ class StreamDownloadList
           bloc.add(AddSingleDownload(DownloadData.fromJson(data['download'])));
         }
 
+        if (data['status'] == UiDownloadAction.resumedDownload.toText()) {
+          bloc.add(ResumeDownload(DownloadData.fromJson(data['download'])));
+        }
+
         if (data['status'] == UiDownloadAction.progressUpdate.toText()) {
           bloc.add(UpdateSingleDownload(
               data['slug'], data['number'], data['progress']));
+        }
+
+        if (data['status'] == UiDownloadAction.retriedDownload.toText()) {
+          bloc.add(RetryingDownload(data['slug'], data['number'],
+              data['progress'], data['isDownloading'], data['hasFailed']));
         }
 
         if (data['status'] == UiDownloadAction.downloadFailed.toText()) {
@@ -65,12 +74,11 @@ class StreamDownloadList
         }
 
         if (data['status'] == UiDownloadAction.downloadCompleted.toText()) {
-          bloc.add(SingleDownloadSuccess(data['slug'], data['number']));
+          bloc.add(SingleDownloadSuccess(
+              data['slug'], data['number'], data['progress']));
         }
 
         if (data['status'] == UiDownloadAction.deletedDownload.toText()) {
-          print(
-              'data from service delete : name of ${data['slug']} and number of ${data['number']}');
           bloc.add(DeleteSingleDownload(data['slug'], data['number']));
         }
 
@@ -97,8 +105,13 @@ class AddSingleDownload
   @override
   Stream<DownloadsListState> toState(
       DownloadsListBloc bloc, DownloadsListState current) async* {
-    yield LoadedDownloadsList(
-        current.list..add(download), current.selections..add(false));
+    final exists = current.list
+        .where((element) => element.slug == download.slug)
+        .where((element) => element.number == element.number)
+        .isNotEmpty;
+    if (!exists)
+      yield LoadedDownloadsList(
+          current.list..add(download), current.selections..add(false));
   }
 }
 
@@ -116,6 +129,50 @@ class UpdateSingleDownload
     for (int i = 0; i < newList.length; i++) {
       if (newList[i].slug == slug && newList[i].number == number) {
         newList[i] = newList[i].copyWith(progress: progress);
+      }
+    }
+    yield LoadedDownloadsList(newList, current.selections);
+  }
+}
+
+class ResumeDownload extends BlocEvent<DownloadsListBloc, DownloadsListState> {
+  final DownloadData download;
+
+  ResumeDownload(this.download);
+  @override
+  Stream<DownloadsListState> toState(
+      DownloadsListBloc bloc, DownloadsListState current) async* {
+    final newList = current.list;
+    for (int i = 0; i < newList.length; i++) {
+      if (newList[i].slug == download.slug &&
+          newList[i].number == download.number) {
+        newList[i] = download;
+      }
+    }
+    yield LoadedDownloadsList(newList, current.selections);
+  }
+}
+
+class RetryingDownload
+    extends BlocEvent<DownloadsListBloc, DownloadsListState> {
+  final String slug;
+  final String number;
+  final int progress;
+  final bool hasFailed;
+  final bool isDownloading;
+
+  RetryingDownload(this.slug, this.number, this.progress, this.isDownloading,
+      this.hasFailed);
+  @override
+  Stream<DownloadsListState> toState(
+      DownloadsListBloc bloc, DownloadsListState current) async* {
+    final newList = current.list;
+    for (int i = 0; i < newList.length; i++) {
+      if (newList[i].slug == slug && newList[i].number == number) {
+        newList[i] = newList[i].copyWith(
+            progress: progress,
+            isDownloading: isDownloading,
+            hasFailed: hasFailed);
       }
     }
     yield LoadedDownloadsList(newList, current.selections);
@@ -187,16 +244,17 @@ class SingleDownloadSuccess
     extends BlocEvent<DownloadsListBloc, DownloadsListState> {
   final String slug;
   final String number;
+  final int progress;
 
-  SingleDownloadSuccess(this.slug, this.number);
+  SingleDownloadSuccess(this.slug, this.number, this.progress);
   @override
   Stream<DownloadsListState> toState(
       DownloadsListBloc bloc, DownloadsListState current) async* {
     final newList = current.list;
     for (int i = 0; i < newList.length; i++) {
       if (newList[i].slug == slug && newList[i].number == number) {
-        newList[i] =
-            newList[i].copyWith(hasFailed: false, isDownloading: false);
+        newList[i] = newList[i].copyWith(
+            hasFailed: false, isDownloading: false, progress: progress);
       }
     }
     yield LoadedDownloadsList(newList, current.selections);
@@ -292,6 +350,20 @@ class DeletionError extends BlocEvent<DownloadsListBloc, DownloadsListState> {
       DownloadsListBloc bloc, DownloadsListState current) async* {
     yield DownloadsListError(
         current.list, current.selections, DownloadsError.deletingError);
+  }
+}
+
+class RetryDownload extends BlocEvent<DownloadsListBloc, DownloadsListState> {
+  final DownloadData download;
+
+  RetryDownload(this.download);
+  @override
+  Stream<DownloadsListState> toState(
+      DownloadsListBloc bloc, DownloadsListState current) async* {
+    FlutterBackgroundService().sendData({
+      'action': ServiceDownloadAction.retryDownload.toText(),
+      'download': download.toJson(),
+    });
   }
 }
 
