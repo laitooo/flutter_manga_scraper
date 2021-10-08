@@ -281,6 +281,8 @@ enum UiDownloadAction {
   deletedDownload,
   deletedDownloads,
   errorDeleting,
+  retriedDownload,
+  resumedDownload,
 }
 
 extension UiDownloadExtension on UiDownloadAction {
@@ -302,8 +304,14 @@ extension UiDownloadExtension on UiDownloadAction {
         return 'deleted_single';
       case UiDownloadAction.deletedDownloads:
         return 'deleted_list';
+      case UiDownloadAction.startedDownload:
+        return 'started_download';
+      case UiDownloadAction.resumedDownload:
+        return 'resumed_download';
       case UiDownloadAction.errorDeleting:
         return 'error_delete';
+      case UiDownloadAction.retriedDownload:
+        return 'retried_download';
       case UiDownloadAction.addedToQueue:
       default:
         return 'in_queue';
@@ -316,6 +324,7 @@ enum ServiceDownloadAction {
   backgroundMode,
   stopService,
   addDownload,
+  retryDownload,
   streamDownloads,
   deleteDownload,
   deleteDownloads,
@@ -336,6 +345,8 @@ extension ServiceDownloadExtenstion on ServiceDownloadAction {
         return 'delete_single';
       case ServiceDownloadAction.deleteDownloads:
         return 'delete_list';
+      case ServiceDownloadAction.retryDownload:
+        return 'retry';
       case ServiceDownloadAction.addDownload:
       default:
         return 'add';
