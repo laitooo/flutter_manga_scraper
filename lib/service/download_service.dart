@@ -20,6 +20,7 @@ Future<void> onStart() async {
   print('download service on Start');
   WidgetsFlutterBinding.ensureInitialized();
   final service = FlutterBackgroundService();
+  _downloadListRepo.checkFailingDownload();
 
   service.onDataReceived.listen((event) async {
     if (event['action'] == ServiceDownloadAction.foregroundMode.toText()) {
@@ -61,6 +62,39 @@ Future<void> onStart() async {
           });
         }
       }
+    }
+
+    if (event['action'] == ServiceDownloadAction.retryDownload.toText()) {
+      DownloadData download = DownloadData.fromJson(event['download']);
+      final companion = download.toCompanion(false).copyWith(
+            isDownloading: Value(false),
+            hasFailed: Value(false),
+            progress: Value(0),
+          );
+      await _downloadListRepo.update(companion);
+      service.sendData({
+        'status': UiDownloadAction.retriedDownload.toText(),
+        'slug': companion.slug.value,
+        'number': companion.number.value,
+        'progress': companion.progress.value,
+        'isDownloading': companion.isDownloading.value,
+        'hasFailed': companion.hasFailed.value,
+        'dialog': false,
+      });
+
+      Future.delayed(Duration(seconds: 1), () {
+        chapters.add(companion);
+        if (chapters.length == 1) {
+          _startDownloading(chapters, service, database);
+        } else {
+          service.sendData({
+            'status': UiDownloadAction.addedToQueue.toText(),
+            'slug': companion.slug.value,
+            'number': companion.number.value,
+            'dialog': true,
+          });
+        }
+      });
     }
 
     if (event['action'] == ServiceDownloadAction.streamDownloads.toText()) {
@@ -158,11 +192,22 @@ void _startDownloading(
     hasCover: current.hasCover.value,
     first: current.first.value,
   ).toJson();
-  service.sendData({
-    'status': UiDownloadAction.startedDownload.toText(),
-    'download': json,
-    'dialog': false,
-  });
+
+  final exists =
+      await _downloadListRepo.exists(current.slug.value, current.number.value);
+  if (!exists) {
+    service.sendData({
+      'status': UiDownloadAction.startedDownload.toText(),
+      'download': json,
+      'dialog': false,
+    });
+  } else {
+    service.sendData({
+      'status': UiDownloadAction.resumedDownload.toText(),
+      'download': json,
+      'dialog': false,
+    });
+  }
 
   final res = await _repo.saveCover(current);
   int progress = 0;
@@ -229,12 +274,14 @@ void _startDownloading(
         'status': UiDownloadAction.downloadCompleted.toText(),
         'slug': current.slug.value,
         'number': current.number.value,
+        'progress': progress,
         'dialog': false,
       });
       service.sendData({
         'status': UiDownloadAction.downloadCompleted.toText(),
         'slug': current.slug.value,
         'number': current.number.value,
+        'progress': progress,
         'dialog': true,
       });
       service.setNotificationInfo(

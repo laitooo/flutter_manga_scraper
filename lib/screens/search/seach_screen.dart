@@ -100,9 +100,6 @@ class _SearchScreenState extends State<_SearchScreen> {
                 );
               } else if (state is SearchSuccess) {
                 if (state.list.isNotEmpty) {
-                  print('=====' * 30);
-                  print('results list length: ${state.list.length}');
-                  print(state.list.toString());
                   return ListView(
                     children: state.list
                         .map(
