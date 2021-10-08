@@ -6,6 +6,7 @@ import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/enums.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/utils/or_error.dart';
+import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class DownloadsListRepository {
@@ -17,6 +18,9 @@ abstract class DownloadsListRepository {
   Future<OrError<Null, Null>> deleteList(List<DownloadData> downloads);
   Future<OrError<Null, Null>> delete(DownloadData download);
   Future<bool> isDownloaded(String slug, String number);
+  Future<bool> exists(String slug, String number);
+
+  Future<OrError<Null, Null>> checkFailingDownload();
 }
 
 class MoorDownloadsListRepository extends DownloadsListRepository {
@@ -59,6 +63,11 @@ class MoorDownloadsListRepository extends DownloadsListRepository {
   }
 
   @override
+  Future<bool> exists(String slug, String number) async {
+    return await database.exists(slug, number);
+  }
+
+  @override
   Future<OrError<List<DownloadData>, Null>> load() async {
     final res = await database.loadDownloads();
     return OrError.value(res);
@@ -66,11 +75,15 @@ class MoorDownloadsListRepository extends DownloadsListRepository {
 
   @override
   Future<OrError<Null, Null>> save(DownloadCompanion download) async {
-    if (download.hasFailed.value) {
-      await database.deleteDownloadByKeys(
-          download.slug.value, download.number.value);
+    if (await database.exists(download.slug.value, download.number.value)) {
+      if (download.hasFailed.value) {
+        await database.deleteDownloadByKeys(
+            download.slug.value, download.number.value);
+      }
+      await database.updateDownload(download);
+    } else {
+      await database.saveDownload(download);
     }
-    await database.saveDownload(download);
     return OrError.value(null);
   }
 
@@ -87,6 +100,22 @@ class MoorDownloadsListRepository extends DownloadsListRepository {
   @override
   Future<OrError<Null, Null>> update(DownloadCompanion download) async {
     await database.updateDownload(download);
+    return OrError.value(null);
+  }
+
+  @override
+  Future<OrError<Null, Null>> checkFailingDownload() async {
+    final downloads = await database.loadDownloads();
+    for (int i = 0; i < downloads.length; i++) {
+      if (downloads[i].isDownloading &&
+          downloads[i].images != downloads[i].progress) {
+        final companion = downloads[i].toCompanion(true).copyWith(
+              hasFailed: Value(true),
+              isDownloading: Value(false),
+            );
+        await update(companion);
+      }
+    }
     return OrError.value(null);
   }
 }
@@ -108,6 +137,11 @@ class MockDownloadsListRepository extends DownloadsListRepository {
 
   @override
   Future<bool> isDownloaded(String slug, String number) async {
+    return generator.generateBool();
+  }
+
+  @override
+  Future<bool> exists(String slug, String number) async {
     return generator.generateBool();
   }
 
@@ -209,5 +243,11 @@ class MockDownloadsListRepository extends DownloadsListRepository {
       volume: generator.generateNumber(50).toString(),
       first: '',
     );
+  }
+
+  @override
+  Future<OrError<Null, Null>> checkFailingDownload() {
+    print('mock data : checked for failing downloads');
+    return Future.delayed(Duration.zero, () => OrError.value(null));
   }
 }

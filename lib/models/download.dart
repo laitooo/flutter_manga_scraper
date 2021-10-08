@@ -94,6 +94,14 @@ class MoorDatabase extends _$MoorDatabase {
     return false;
   }
 
+  Future<bool> exists(String slug, String number) async {
+    final ll = await (select(download)
+          ..where((tbl) => tbl.slug.equals(slug))
+          ..where((tbl) => tbl.number.equals(number)))
+        .get();
+    return ll.isNotEmpty;
+  }
+
   Future<DownloadData> getDownload(String slug, String number) async {
     final ll = await (select(download)
           ..where((tbl) => tbl.slug.equals(slug))

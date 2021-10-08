@@ -20,6 +20,7 @@ Future<void> onStart() async {
   print('download service on Start');
   WidgetsFlutterBinding.ensureInitialized();
   final service = FlutterBackgroundService();
+  _downloadListRepo.checkFailingDownload();
 
   service.onDataReceived.listen((event) async {
     if (event['action'] == ServiceDownloadAction.foregroundMode.toText()) {
@@ -158,11 +159,22 @@ void _startDownloading(
     hasCover: current.hasCover.value,
     first: current.first.value,
   ).toJson();
-  service.sendData({
-    'status': UiDownloadAction.startedDownload.toText(),
-    'download': json,
-    'dialog': false,
-  });
+
+  final exists =
+      await _downloadListRepo.exists(current.slug.value, current.number.value);
+  if (!exists) {
+    service.sendData({
+      'status': UiDownloadAction.startedDownload.toText(),
+      'download': json,
+      'dialog': false,
+    });
+  } else {
+    service.sendData({
+      'status': UiDownloadAction.resumedDownload.toText(),
+      'download': json,
+      'dialog': false,
+    });
+  }
 
   final res = await _repo.saveCover(current);
   int progress = 0;
@@ -229,12 +241,14 @@ void _startDownloading(
         'status': UiDownloadAction.downloadCompleted.toText(),
         'slug': current.slug.value,
         'number': current.number.value,
+        'progress': progress,
         'dialog': false,
       });
       service.sendData({
         'status': UiDownloadAction.downloadCompleted.toText(),
         'slug': current.slug.value,
         'number': current.number.value,
+        'progress': progress,
         'dialog': true,
       });
       service.setNotificationInfo(
