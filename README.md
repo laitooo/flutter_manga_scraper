@@ -40,10 +40,10 @@
 - Advanced search (by manga genres, type and status).
 
 ## TODO:
-[] Make sure big images is working well
-[] Make sure reader is working good for landscape.
-[] Multi-chapters download screen.
-[x] Add retry download when a download fails.
+- [ ] Make sure big images is working well
+- [ ] Make sure reader is working good for landscape.
+- [ ] Multi-chapters download screen.
+- [x] Add retry download when a download fails.
 
 ## Packages used:
 - [Bloc](https://pub.dev/packages/flutter_bloc) used for state managements.
