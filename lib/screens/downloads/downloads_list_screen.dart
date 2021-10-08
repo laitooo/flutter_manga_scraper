@@ -130,6 +130,10 @@ class DownloadsScreenState extends State<_DownloadsScreen> {
                     BlocProvider.of<DownloadsListBloc>(context)
                         .add(DeleteSelected(index));
                   },
+                  onRetryClick: () {
+                    BlocProvider.of<DownloadsListBloc>(context)
+                        .add(RetryDownload(state.list[index]));
+                  },
                 ),
               ),
             ],

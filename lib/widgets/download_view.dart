@@ -9,6 +9,7 @@ import 'package:manga_scraper/utils/constants.dart';
 import 'package:manga_scraper/utils/features.dart';
 import 'package:manga_scraper/utils/generator.dart';
 import 'package:manga_scraper/widgets/auto_rotate.dart';
+import 'package:manga_scraper/widgets/progress_indicator.dart';
 import 'package:manga_scraper/widgets/progress_percentage.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -18,18 +19,23 @@ class DownloadView extends StatelessWidget {
   final Function onClick;
   final Function onChapterClick;
   final Function onDeleteClick;
+  final Function onRetryClick;
   final Function(bool) onCheckChange;
-  bool get isSuccess => !download.hasFailed && !download.isDownloading;
+  bool get isSuccess =>
+      !download.hasFailed &&
+      !download.isDownloading &&
+      download.images == download.progress;
 
-  const DownloadView(
-      {Key key,
-      this.download,
-      this.isSelected,
-      this.onClick,
-      this.onChapterClick,
-      this.onDeleteClick,
-      this.onCheckChange})
-      : super(key: key);
+  const DownloadView({
+    Key key,
+    this.download,
+    this.isSelected,
+    this.onClick,
+    this.onChapterClick,
+    this.onDeleteClick,
+    this.onRetryClick,
+    this.onCheckChange,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,50 +126,7 @@ class DownloadView extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 10),
-              if (isSuccess) ...[
-                IconButton(
-                  onPressed: onClick,
-                  icon: AutoRotate(
-                    child: SvgPicture.asset(
-                      'assets/icons/next_icon.svg',
-                      color: AppColors.getPrimaryColor(),
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: onDeleteClick,
-                  child: Container(
-                    color: Colors.red,
-                    width: 30,
-                    height: 50,
-                    child: SvgPicture.asset(
-                      'assets/icons/delete_icon.svg',
-                      color: Colors.white,
-                      width: 25,
-                      height: 25,
-                    ),
-                  ),
-                ),
-              ],
-              if (!download.hasFailed && download.isDownloading) ...[
-                ProgressPercentage(
-                  percentage: download.progress / download.images,
-                  size: 46,
-                  textFont: 14,
-                ),
-                SizedBox(width: 10),
-              ],
-              if (download.hasFailed) ...[
-                SvgPicture.asset(
-                  'assets/icons/error_icon.svg',
-                  color: Colors.red,
-                  width: 25,
-                  height: 25,
-                ),
-                SizedBox(width: 10),
-              ],
+              ..._showDownloadWidgets(),
             ],
           ),
         ),
@@ -180,7 +143,70 @@ class DownloadView extends StatelessWidget {
     final extPath = (await getExternalStorageDirectory()).path;
     final path = "$extPath/${Constants.rootDir}/${Constants.downloadsDir}/" +
         "${download.name}/cover.jpg";
-    print('path loaded : $path');
     return File(path);
+  }
+
+  _showDownloadWidgets() {
+    if (download.hasFailed) {
+      return [
+        InkWell(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: SvgPicture.asset(
+              'assets/icons/reload_icon.svg',
+              color: AppColors.getPrimaryColor(),
+              width: 40,
+              height: 40,
+            ),
+          ),
+          onTap: onRetryClick,
+        ),
+      ];
+    } else {
+      if (download.isDownloading) {
+        return [
+          ProgressPercentage(
+            percentage: download.progress / download.images,
+            size: 46,
+            textFont: 14,
+          ),
+          SizedBox(width: 10),
+        ];
+      } else {
+        if (download.images == download.progress) {
+          return [
+            IconButton(
+              onPressed: onClick,
+              icon: AutoRotate(
+                child: SvgPicture.asset(
+                  'assets/icons/next_icon.svg',
+                  color: AppColors.getPrimaryColor(),
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: onDeleteClick,
+              child: Container(
+                color: Colors.red,
+                width: 30,
+                height: 50,
+                child: SvgPicture.asset(
+                  'assets/icons/delete_icon.svg',
+                  color: Colors.white,
+                  width: 25,
+                  height: 25,
+                ),
+              ),
+            ),
+          ];
+        } else {
+          return [
+            AppProgressIndicator.custom(size: 40),
+          ];
+        }
+      }
+    }
   }
 }
